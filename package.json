@@ -2,7 +2,6 @@
   "name": "client",
   "version": "0.1.0",
   "private": true,
-  "proxy": "https://budget-planner-server.herokuapp.com/",
   "dependencies": {
     "antd": "^4.8.2",
     "axios": "^0.21.0",
