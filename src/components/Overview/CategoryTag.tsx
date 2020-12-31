@@ -7,7 +7,7 @@ interface TagProps {
   type: string;
 }
 
-function CategoryTag({ category, type }: TagProps) {
+function CategoryTag({ category, type }: TagProps): JSX.Element {
   return (
     <Tag color={type === "expense" ? COLORS.ORANGE : COLORS.THEMEBLUE}>
       {category}

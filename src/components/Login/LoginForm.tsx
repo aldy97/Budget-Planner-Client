@@ -4,6 +4,12 @@ import { Form, Input, Button, Checkbox, message } from "antd";
 import axios from "axios";
 import { Redirect } from "react-router-dom";
 import {
+  UPDATE_BUDGET,
+  UpdateBudget,
+  UPDATE_BUDGET_THRESHOLD,
+  UpdateBudgetThreshold,
+} from "../../actions/AccountAction";
+import {
   UPDATE_USER_EMAIL,
   UpdateEmail,
   UpdateUID,
@@ -21,12 +27,20 @@ export const StyledForm = styled(Form)`
 `;
 
 interface LoginFormProps {
-  updateEmail?: any;
-  updateUserID?: any;
-  updateName?: any;
+  updateEmail: (email: string) => void;
+  updateUserID: (id: string) => void;
+  updateName: (name: string) => void;
+  updateBudget: (budget: number) => void;
+  updateThreshold: (threshold: number) => void;
 }
 
-function LoginForm({ updateEmail, updateUserID, updateName }: LoginFormProps) {
+function LoginForm({
+  updateEmail,
+  updateUserID,
+  updateName,
+  updateBudget,
+  updateThreshold,
+}: LoginFormProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -43,16 +57,18 @@ function LoginForm({ updateEmail, updateUserID, updateName }: LoginFormProps) {
       updateUserID(response.data.uid);
       updateName(response.data.name);
       setIsLogin(true);
+      updateBudget(response.data.budget);
+      updateThreshold(response.data.threshold);
     } else {
       message.error(messageText);
     }
   };
 
-  const handleEmailChange = (e: any) => {
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
   };
 
-  const handlePasswordChange = (e: any) => {
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
   };
 
@@ -100,6 +116,20 @@ const mapDispatch = (dispatch: Dispatch) => {
     },
     updateName(name: string) {
       const action: UpdateName = { type: UPDATE_USER_NAME, name };
+      dispatch(action);
+    },
+    updateBudget(budget: number) {
+      const action: UpdateBudget = {
+        type: UPDATE_BUDGET,
+        budget,
+      };
+      dispatch(action);
+    },
+    updateThreshold(threshold: number) {
+      const action: UpdateBudgetThreshold = {
+        type: UPDATE_BUDGET_THRESHOLD,
+        threshold,
+      };
       dispatch(action);
     },
   };

@@ -7,8 +7,8 @@ import ExpenseSelector from "./ExpenseSelector";
 import IncomeSelector from "./IncomeSelector";
 
 interface CategoryInputProps {
-  recordType?: string;
-  updateCategoryToRedux?: any;
+  recordType: string;
+  updateCategoryToRedux: (cat: string) => void;
 }
 
 function CategoryInput({ recordType, updateCategoryToRedux }: CategoryInputProps) {

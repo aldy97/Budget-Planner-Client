@@ -20,9 +20,9 @@ interface FilterProps {
   enabled: boolean;
   month: string;
   category: string;
-  toggleSwitch: any;
-  updateMonthToRedux: any;
-  updateCategoryToRedux: any;
+  toggleSwitch: (open: boolean) => void;
+  updateMonthToRedux: (month: string) => void;
+  updateCategoryToRedux: (category: string) => void;
 }
 
 function Filter({

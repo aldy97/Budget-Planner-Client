@@ -23,7 +23,7 @@ const Title = styled.div`
   font-weight: bold;
 `;
 
-function Content() {
+function Content(): JSX.Element {
   const { Content } = Layout;
   return (
     <Content style={{ margin: "4px 16px" }}>

@@ -13,7 +13,7 @@ const StyledDesc = styled.div`
   color: #8c8c8c;
 `;
 
-function Login() {
+function Login(): JSX.Element {
   const [isAtLogin, setIsAtLogin] = useState<boolean>(true);
 
   const toogle = () => {
@@ -27,9 +27,7 @@ function Login() {
   return (
     <>
       <Logo size="large" showWords></Logo>
-      <StyledDesc>
-        An web app that helps you improve your financial status
-      </StyledDesc>
+      <StyledDesc>A web app that helps you improve your financial status</StyledDesc>
       <LoginRegToggler atLogin={isAtLogin} toogle={toogle}></LoginRegToggler>
       {isAtLogin && <LoginForm></LoginForm>}
       {!isAtLogin && <RegisterFrom></RegisterFrom>}

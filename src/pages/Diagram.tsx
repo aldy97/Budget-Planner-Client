@@ -5,7 +5,7 @@ import Header from "../components/Header";
 import Content from "../components/Diagram/Content";
 import Footer from "../components/Footer";
 
-function Diagram() {
+function Diagram(): JSX.Element {
   return (
     <Layout style={{ minHeight: "100vh" }}>
       <SideMenu selected={2}></SideMenu>

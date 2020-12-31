@@ -9,7 +9,7 @@ import { BrowserRouter, Route } from "react-router-dom";
 import { Provider } from "react-redux";
 import { configureStore } from "./reducers/index";
 
-const store = configureStore();
+export const store = configureStore();
 
 const App: React.FC = () => {
   return (

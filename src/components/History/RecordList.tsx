@@ -23,22 +23,29 @@ import { RootState } from "../../reducers/index";
 import { Dispatch } from "redux";
 
 interface List {
-  records?: Record[];
-  recordID?: string;
-  enabled?: boolean;
-  month?: string;
-  category?: string;
-  updateRecordsToRedux?: any;
-  updateRecordIDToRedux?: any;
-  updateTitleToRedux?: any;
-  updateDescToRedux?: any;
-  updateAmountToRedux?: any;
-  updateDateToRedux?: any;
-  user?: any;
-  recordTitle?: string;
-  amount?: number;
-  recordDate?: string;
-  description?: string;
+  records: Record[];
+  recordID: string;
+  enabled: boolean;
+  month: string;
+  category: string;
+  updateRecordsToRedux: (records: Record[]) => void;
+  updateRecordIDToRedux: (id: string) => void;
+  updateTitleToRedux: (title: string) => void;
+  updateDescToRedux: (desc: string) => void;
+  updateAmountToRedux: (amount: number) => void;
+  updateDateToRedux: (date: string) => void;
+  user: string;
+  recordTitle: string;
+  amount: number;
+  recordDate: string;
+  description: string;
+}
+
+interface UpdateRequest {
+  _id: string;
+  updatedFields: {
+    [key: string]: string | number;
+  };
 }
 
 function RecordList({
@@ -61,46 +68,52 @@ function RecordList({
 }: List) {
   const [data, setData] = useState<Record[]>([]);
 
+  const getSortData = (records: Record[]): Record[] => {
+    const sortedData = records.sort((a, b) => {
+      if (a.recordDate < b.recordDate) {
+        return 1;
+      }
+      return a.amount >= b.amount ? 1 : -1;
+    });
+    return sortedData;
+  };
+
   const generateRecords = (): void => {
     let modifiedRecord: Record[] = [];
-    if (!enabled) {
-      modifiedRecord = records ? records : [];
+    if (!enabled || (month === "" && category === "")) {
+      modifiedRecord = records;
     } else {
       if (month && category && month !== "" && category !== "") {
-        modifiedRecord = records
-          ? records.filter(
-              record =>
-                record.category === category &&
-                record.recordDate.slice(0, 7) === month
-            )
-          : [];
+        modifiedRecord = records.filter(
+          record =>
+            record.category === category && record.recordDate.slice(0, 7) === month
+        );
       } else if (!month && !category) {
-        modifiedRecord = records ? records : [];
+        modifiedRecord = records;
       } else if (month && month !== "") {
-        modifiedRecord = records
-          ? records.filter(record => record.recordDate.slice(0, 7) === month)
-          : [];
+        modifiedRecord = records.filter(
+          record => record.recordDate.slice(0, 7) === month
+        );
       } else {
-        modifiedRecord = records
-          ? records.filter(record => record.category === category)
-          : [];
+        modifiedRecord = records.filter(record => record.category === category);
       }
     }
+
     // caution: update state only at the top level
-    setData(modifiedRecord.reverse());
+    setData(getSortData(modifiedRecord));
   };
 
   useEffect(() => {
     generateRecords();
   }, [enabled, month, category, records]);
 
-  const updateAllRecordsToRedux = async () => {
+  const updateAllRecordsToRedux = async (): Promise<void> => {
     const response = await axios.get(`/api/getRecords/${user}`);
     const records: Record[] = response.data;
     updateRecordsToRedux(records);
   };
 
-  const handleDelBtnClick = async (recordID: string) => {
+  const handleDelBtnClick = async (recordID: string): Promise<void> => {
     const request = { data: { recordID } };
     const response = await axios.delete("/api/deleteRecord", request);
     if (response.data.succ) {
@@ -112,7 +125,7 @@ function RecordList({
   };
 
   // 如果item未被选中，点击修改会选中该item并把item信息更新到redux
-  const handleEditBtnClick = (record: Record) => {
+  const handleEditBtnClick = (record: Record): void => {
     if (recordID !== record._id) {
       updateRecordIDToRedux(record._id);
       updateTitleToRedux(record.title);
@@ -124,7 +137,7 @@ function RecordList({
     }
   };
 
-  const handleConfirmEditBtnClick = async () => {
+  const handleConfirmEditBtnClick = async (): Promise<void> => {
     if (recordDate === "") {
       message.warn("Please select a record date");
       return;
@@ -135,7 +148,7 @@ function RecordList({
     }
     const edittedTitle = recordTitle === "" ? "No title" : recordTitle;
     const edittedDesc = description === "" ? "No description" : description;
-    const request = {
+    const request: UpdateRequest = {
       _id: recordID,
       updatedFields: {
         title: edittedTitle,
@@ -220,42 +233,42 @@ const mapState = (state: RootState) => {
 
 const mapDispatch = (dispatch: Dispatch) => {
   return {
-    updateRecordsToRedux(records: Record[]) {
+    updateRecordsToRedux(records: Record[]): void {
       const action: UpdateRecords = {
         type: UPDATE_RECORDS,
         records,
       };
       dispatch(action);
     },
-    updateRecordIDToRedux(recordID: string) {
+    updateRecordIDToRedux(recordID: string): void {
       const action: UpdateRecordID = {
         type: UPDATE_RECORD_ID,
         recordID,
       };
       dispatch(action);
     },
-    updateTitleToRedux(title: string) {
+    updateTitleToRedux(title: string): void {
       const action: EditTitle = {
         type: EDIT_TITLE,
         title,
       };
       dispatch(action);
     },
-    updateDescToRedux(description: string) {
+    updateDescToRedux(description: string): void {
       const action: EditDescription = {
         type: EDIT_DESCRIPTION,
         description,
       };
       dispatch(action);
     },
-    updateAmountToRedux(amount: number) {
+    updateAmountToRedux(amount: number): void {
       const action: EditAmount = {
         type: EDIT_AMOUNT,
         amount,
       };
       dispatch(action);
     },
-    updateDateToRedux(date: string) {
+    updateDateToRedux(date: string): void {
       const action: EditRecordDate = {
         type: EDIT_RECORD_DATE,
         date,

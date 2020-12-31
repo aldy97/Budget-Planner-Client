@@ -7,12 +7,12 @@ import { Dispatch } from "redux";
 import { RootState } from "../reducers/index";
 
 interface DateInput {
-  recordDate?: string;
-  updateRecordDateToRedux?: any;
+  recordDate: string;
+  updateRecordDateToRedux: (date: string) => void;
 }
 
 function RecordDateInput({ recordDate, updateRecordDateToRedux }: DateInput) {
-  const onChange = (date: any, dateString: string) => {
+  const onChange = (date: any, dateString: string): void => {
     updateRecordDateToRedux(dateString);
   };
 

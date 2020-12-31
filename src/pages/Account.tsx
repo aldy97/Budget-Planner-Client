@@ -5,7 +5,7 @@ import Content from "../components/Account/Content";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 
-function Account() {
+function Account(): JSX.Element {
   return (
     <Layout style={{ minHeight: "100vh" }}>
       <SideMenu selected={4}></SideMenu>

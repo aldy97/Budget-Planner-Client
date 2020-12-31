@@ -8,13 +8,14 @@ import { Dispatch } from "redux";
 const { Option } = Select;
 
 interface SelectProps {
-  updateCategoryToRedux?: any;
+  updateCategoryToRedux: (cat: string) => void;
 }
 
 function ExpenseSelector({ updateCategoryToRedux }: SelectProps) {
-  const handleCategoryChange = (value: any) => {
+  const handleCategoryChange = (value: any): void => {
     updateCategoryToRedux(value);
   };
+
   return (
     <Select
       placeholder="Categories"

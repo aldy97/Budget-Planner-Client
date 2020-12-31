@@ -12,14 +12,14 @@ interface LineChartProps {
 }
 
 // 折线图：根据记录类型展示本周的消费/收入记录
-function LineChart({ type, records }: LineChartProps) {
+function LineChart({ type, records }: LineChartProps): JSX.Element {
   // 过去七天日期
   const [days, setDays] = useState<string[]>([]);
   // 过去七天每日的记录总额
   const [totalsInPastWeek, setTotalInPastWeek] = useState<number[]>([]);
 
   // 取得包括今天在内的七天日期📅
-  const getDays = () => {
+  const getDays = (): void => {
     const last7Days: string[] = [];
     for (let i = 0; i < 7; i++) {
       last7Days.push(moment(Date.now() - i * 24 * 3600 * 1000).format("MM-DD"));
@@ -28,7 +28,7 @@ function LineChart({ type, records }: LineChartProps) {
   };
 
   // 根据传入的记录类型，统计过去一周每日的花费/收入
-  const getTotalsInPastWeek = () => {
+  const getTotalsInPastWeek = (): void => {
     const tempTotalsInPastWeek: number[] = new Array(7).fill(0);
     if (records) {
       const filteredRecords = records.filter(record => record.type === type);

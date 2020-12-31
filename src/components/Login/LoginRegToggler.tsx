@@ -41,7 +41,7 @@ const StyledItem = styled.span<ItemProps>`
   user-select: none;
 `;
 
-function LoginRegToggler({ atLogin, toogle }: Toggler) {
+function LoginRegToggler({ atLogin, toogle }: Toggler): JSX.Element {
   const handleLoginClick = () => {
     if (!atLogin) {
       toogle();

@@ -15,12 +15,16 @@ import { connect } from "react-redux";
 import { Dispatch } from "redux";
 
 interface RegisterFormProps {
-  updateEmail?: any;
-  updateUserID?: any;
-  updateName?: any;
+  updateEmail: (email: string) => void;
+  updateUserID: (id: string) => void;
+  updateName: (name: string) => void;
 }
 
-function RegisterFrom({ updateEmail, updateName, updateUserID }: RegisterFormProps) {
+function RegisterFrom({
+  updateEmail,
+  updateName,
+  updateUserID,
+}: RegisterFormProps): JSX.Element {
   const [isRegistered, setIsRegistered] = useState(false);
 
   const [email, setEmail] = useState("");
@@ -31,19 +35,19 @@ function RegisterFrom({ updateEmail, updateName, updateUserID }: RegisterFormPro
 
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  const handleEmailChange = (e: any) => {
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
   };
 
-  const handleNameChange = (e: any) => {
+  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setName(e.target.value);
   };
 
-  const handlePasswordChange = (e: any) => {
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
   };
 
-  const handleConfirmPasswordChange = (e: any) => {
+  const handleConfirmPasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setConfirmPassword(e.target.value);
   };
 

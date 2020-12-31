@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import RecordInput from "./RecordInput";
 import { Record } from "../components/Overview/Content";
-import { message } from "antd";
+import { message, Modal } from "antd";
 import axios from "axios";
-import { Modal } from "antd";
 import { UpdateRecords, UPDATE_RECORDS } from "../actions/HomeAction";
 import { CLEAR_RECORD, ClearRecord } from "../actions/ModalAction";
 import { connect } from "react-redux";
@@ -37,7 +36,7 @@ function AddRecordModal({
   clearRecord,
   updateRecordsToRedux,
 }: ModalProps) {
-  const [confirmLoading, setConfirmLoading] = useState(false);
+  // const [confirmLoading, setConfirmLoading] = useState(false);
 
   const updateAllRecordsToRedux = async () => {
     const response = await axios.get(`/api/getRecords/${user}`);
@@ -83,17 +82,15 @@ function AddRecordModal({
   };
 
   return (
-    <>
-      <Modal
-        title="Please fill record details"
-        visible={visible}
-        onOk={handleOk}
-        confirmLoading={confirmLoading}
-        onCancel={handleCancel}
-      >
-        <RecordInput></RecordInput>
-      </Modal>
-    </>
+    <Modal
+      title="Please fill record details"
+      visible={visible}
+      onOk={handleOk}
+      confirmLoading={false}
+      onCancel={handleCancel}
+    >
+      <RecordInput></RecordInput>
+    </Modal>
   );
 }
 

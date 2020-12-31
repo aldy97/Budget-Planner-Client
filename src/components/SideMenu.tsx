@@ -25,8 +25,8 @@ const StyledWord = styled.div`
 
 interface MenuProps {
   selected: number;
-  clearRecord?: any;
-  resetRecordID?: any;
+  clearRecord: () => void;
+  resetRecordID: () => void;
 }
 
 function SideMenu({ selected, clearRecord, resetRecordID }: MenuProps) {

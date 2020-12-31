@@ -1,19 +1,62 @@
-import React from "react";
-import { Layout, Input, Space, Button, message } from "antd";
+import React, { useState } from "react";
+import { Layout, Input, Space, Button } from "antd";
+import { message } from "antd";
+import axios from "axios";
+import {
+  UPDATE_BUDGET,
+  UpdateBudget,
+  UPDATE_BUDGET_THRESHOLD,
+  UpdateBudgetThreshold,
+} from "../../actions/AccountAction";
+import { Dispatch } from "redux";
 import { connect } from "react-redux";
 import { RootState } from "../../reducers/index";
-import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
+import Progress from "./Progress";
 
 interface ContenProps {
-  name?: string;
-  email?: string;
+  name: string;
+  email: string;
+  id: string;
+  budget: number;
+  threshold: number;
+  updateBudgetToRedux: (budget: number) => void;
+  updateThresholdToRedux: (threshold: number) => void;
 }
 
-function Content({ name, email }: ContenProps) {
+function Content({
+  name,
+  email,
+  id,
+  budget,
+  threshold,
+  updateBudgetToRedux,
+  updateThresholdToRedux,
+}: ContenProps) {
   const { Content } = Layout;
+  const [currBudget, setCurrBudget] = useState<number>(budget);
+  const [currThreshold, setCurrThrehold] = useState<number>(threshold);
 
-  const handleConfirmBtnClick = () => {
-    message.info("This feature is under construction");
+  const handleBudgetChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    setCurrBudget(parseInt(e.target.value));
+  };
+
+  const handleConfirmBtnClick = async () => {
+    if (currBudget < 0) {
+      message.error("Budget must be greater than 0");
+      return;
+    }
+    const request = {
+      _id: id,
+      updatedFields: { budget: currBudget, threshold: currThreshold },
+    };
+    const response = await axios.put("/api/updateUserInfo", request);
+    if (response.data.status) {
+      message.success(response.data.message);
+      updateBudgetToRedux(response.data.updatedUserInfo.budget as number);
+      updateThresholdToRedux(response.data.updatedUserInfo.threshold);
+    } else {
+      message.error(response.data.message);
+    }
   };
 
   return (
@@ -24,18 +67,23 @@ function Content({ name, email }: ContenProps) {
       >
         <Space direction="vertical" size="large">
           <div>
-            <div>Name</div>
-            <Input defaultValue={name}></Input>
+            <div>Name:</div>
+            <Input defaultValue={name} disabled></Input>
           </div>
           <div>
-            <div>Email</div>
+            <div>Email:</div>
             <Input defaultValue={email} style={{ width: 224 }} disabled></Input>
           </div>
           <div>
-            <div>Set Monthly Budget</div>
-            <Input prefix="$" suffix="CAD" />
+            <div>Set monthly budget:</div>
+            <Input
+              defaultValue={currBudget}
+              prefix="$"
+              suffix="CAD"
+              onChange={handleBudgetChange}
+            />
           </div>
-          <div>
+          {/* <div>
             <div>New Password</div>
             <Input.Password
               iconRender={visible =>
@@ -50,8 +98,15 @@ function Content({ name, email }: ContenProps) {
                 visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
               }
             ></Input.Password>
+          </div> */}
+          <div>
+            <div>Set reminder for my budget:</div>
+            <Progress
+              threshold={currThreshold}
+              changeThreshold={setCurrThrehold}
+            ></Progress>
           </div>
-          <Button onClick={handleConfirmBtnClick} type="primary">
+          <Button type="primary" onClick={handleConfirmBtnClick}>
             Confirm
           </Button>
         </Space>
@@ -64,7 +119,29 @@ const mapState = (state: RootState) => {
   return {
     name: state.HomeReducer.name,
     email: state.HomeReducer.email,
+    id: state.HomeReducer.uid,
+    budget: state.AccountReducer.budget,
+    threshold: state.AccountReducer.threshold,
   };
 };
 
-export default connect(mapState, null)(Content);
+const mapDispatch = (dispatch: Dispatch) => {
+  return {
+    updateBudgetToRedux(budget: number): void {
+      const action: UpdateBudget = {
+        type: UPDATE_BUDGET,
+        budget,
+      };
+      dispatch(action);
+    },
+    updateThresholdToRedux(threshold: number): void {
+      const action: UpdateBudgetThreshold = {
+        type: UPDATE_BUDGET_THRESHOLD,
+        threshold,
+      };
+      dispatch(action);
+    },
+  };
+};
+
+export default connect(mapState, mapDispatch)(Content);

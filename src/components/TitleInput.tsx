@@ -7,11 +7,11 @@ import { Dispatch } from "redux";
 
 interface TitleInputProps {
   title?: string;
-  updateTitleToRedux?: any;
+  updateTitleToRedux: (title: string) => void;
 }
 
 function TitleInput({ updateTitleToRedux, title }: TitleInputProps) {
-  const handleInputChange = (e: any) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     updateTitleToRedux(e.target.value);
   };
   return (

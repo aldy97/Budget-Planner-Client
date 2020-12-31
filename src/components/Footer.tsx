@@ -22,7 +22,7 @@ const StyledSpace = styled(Space)`
   }
 `;
 
-function Footer() {
+function Footer(): JSX.Element {
   const { Footer } = Layout;
   return (
     <Footer style={{ textAlign: "center" }}>

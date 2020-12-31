@@ -38,7 +38,7 @@ interface LogoProps {
   size?: "large" | "medium";
 }
 
-function Logo({ showWords, size }: LogoProps) {
+function Logo({ showWords, size }: LogoProps): JSX.Element {
   return (
     <Wrapper size={size}>
       <LogoWrapper size={size}>BP</LogoWrapper>

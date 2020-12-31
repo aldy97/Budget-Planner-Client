@@ -5,13 +5,14 @@ import { connect } from "react-redux";
 import { Dispatch } from "redux";
 
 interface AmountInputProps {
-  updateCategoryToRedux?: any;
+  updateCategoryToRedux: (amount: number) => void;
 }
 
 function AmountInput({ updateCategoryToRedux }: AmountInputProps) {
-  const onChange = (value: any) => {
-    updateCategoryToRedux(value);
+  const onChange = (value: string | number | undefined): void => {
+    updateCategoryToRedux(value as number);
   };
+
   return (
     <>
       <InputNumber

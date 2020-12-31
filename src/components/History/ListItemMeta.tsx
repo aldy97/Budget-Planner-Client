@@ -20,10 +20,10 @@ import { RootState } from "../../reducers/index";
 interface MetaProps {
   item: Record;
   recordID?: string;
-  updateTitle?: any;
-  updateDesc?: any;
-  updateAmount?: any;
-  updateDate?: any;
+  updateTitle: (title: string) => void;
+  updateDesc: (desc: string) => void;
+  updateAmount: (amount: number) => void;
+  updateDate: (date: string) => void;
 }
 
 // History内列表内容解构
@@ -35,16 +35,16 @@ function ListItemMeta({
   updateAmount,
   updateDate,
 }: MetaProps) {
-  const handleTitleChange = (e: any) => {
+  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     updateTitle(e.target.value);
   };
 
-  const handleDescChange = (e: any) => {
+  const handleDescChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     updateDesc(e.target.value);
   };
 
-  const handleAmountChange = (value: any) => {
-    updateAmount(value);
+  const handleAmountChange = (value: string | number | undefined) => {
+    updateAmount(value as number);
   };
 
   const handleDateChange = (date: any, dateString: string) => {

@@ -6,7 +6,7 @@ interface DropDown {
   name: string;
 }
 
-function UserDropDown({ name }: DropDown) {
+function UserDropDown({ name }: DropDown): JSX.Element {
   const handleLogOutBtnClcik = () => {
     window.location.href = "/";
   };
@@ -25,7 +25,7 @@ function UserDropDown({ name }: DropDown) {
     <Dropdown overlay={menu} placement="bottomCenter">
       <Button>
         <UserOutlined></UserOutlined>
-        {name}
+        <span data-test="name">{name}</span>
       </Button>
     </Dropdown>
   );
