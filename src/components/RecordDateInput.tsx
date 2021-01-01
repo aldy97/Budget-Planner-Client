@@ -16,7 +16,13 @@ function RecordDateInput({ recordDate, updateRecordDateToRedux }: DateInput) {
     updateRecordDateToRedux(dateString);
   };
 
-  return <DatePicker defaultValue={moment(recordDate)} onChange={onChange} />;
+  return (
+    <DatePicker
+      defaultValue={moment(recordDate)}
+      onChange={onChange}
+      data-test="date"
+    />
+  );
 }
 
 const mapState = (state: RootState) => {

@@ -6,7 +6,7 @@ import { RootState } from "../reducers/index";
 import { Dispatch } from "redux";
 
 interface TitleInputProps {
-  title?: string;
+  title: string;
   updateTitleToRedux: (title: string) => void;
 }
 
@@ -19,6 +19,7 @@ function TitleInput({ updateTitleToRedux, title }: TitleInputProps) {
       defaultValue={title}
       onChange={handleInputChange}
       placeholder="Title (optional)"
+      data-test="input"
     ></Input>
   );
 }

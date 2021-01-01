@@ -5,6 +5,11 @@ import { Record } from "../Overview/Content";
 import { connect } from "react-redux";
 import { RootState } from "../../reducers/index";
 
+interface TempDataCorrectedProps {
+  value: number | undefined;
+  name: string;
+}
+
 interface PieChartProps {
   type: "expense" | "income";
   records?: Record[];
@@ -42,7 +47,7 @@ function PieChart({ type, records }: PieChartProps) {
         tempData.set(record.category, record.amount + curr);
       }
     }
-    const tempDataCorrected = [];
+    const tempDataCorrected: TempDataCorrectedProps[] = [];
     for (let i = 0; i < tempCategories.length; i++) {
       tempDataCorrected.push({
         value: tempData.get(tempCategories[i]),

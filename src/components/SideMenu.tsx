@@ -60,13 +60,19 @@ function SideMenu({ selected, clearRecord, resetRecordID }: MenuProps) {
         <Logo size="medium" showWords={false}></Logo>
         <StyledWord>Budget Planner</StyledWord>
       </div>
-      <Menu theme="dark" defaultSelectedKeys={[`${selected}`]} mode="inline">
+      <Menu
+        theme="dark"
+        defaultSelectedKeys={[`${selected}`]}
+        mode="inline"
+        data-test="menu"
+      >
         <Menu.Item
           key="1"
           icon={<PieChartOutlined />}
           onClick={() => {
             handleMenuItemClick("overview");
           }}
+          data-test="overview"
         >
           Overview
         </Menu.Item>
