@@ -36,7 +36,7 @@ function AddRecordModal({
   const [description, setDescription] = useState("");
 
   const getRecords = async (): Promise<void> => {
-    const response = await axios.get(`/api/getRecords/${currUser._id}`);
+    const response = await axios.get(`${URL}/api/getRecords/${currUser._id}`);
     const records: Record[] = response.data.records;
     updateRecordsToRedux ? updateRecordsToRedux(records) : null;
   };
@@ -53,6 +53,11 @@ function AddRecordModal({
 
     if (!recordDate) {
       message.error("Record date is not selected");
+      return;
+    }
+
+    if (!amount) {
+      message.error("Amount must be provided");
       return;
     }
 

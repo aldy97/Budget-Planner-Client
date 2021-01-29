@@ -11,6 +11,8 @@ import { RootState } from "../../reducers/index";
 import { Dispatch } from "redux";
 import { UpdateRecords, UPDATE_RECORDS } from "../../actions/HomeAction";
 import { Filter } from "../../reducers/FilterReducer";
+import moment from "moment";
+import { URL } from "../../utils/constants";
 
 interface List {
   user?: User;
@@ -41,7 +43,7 @@ const dummySelected: Record = {
 function RecordList({ user, records, filter, updateRecordsToRedux }: List) {
   const recordList = records || [];
   const currUser = user ? user : null;
-  const [data, setData] = useState<Record[]>(recordList);
+  const [data, setData] = useState<Record[]>([]);
   const [selected, setSelected] = useState<Record>(dummySelected);
 
   const [title, setTitle] = useState("");
@@ -52,10 +54,6 @@ function RecordList({ user, records, filter, updateRecordsToRedux }: List) {
   const [delID, setDelID] = useState("");
 
   useEffect(() => {
-    setData(recordList);
-  }, [records]);
-
-  useEffect(() => {
     setTitle(selected.title);
     setDescription(selected.description);
     setAmount(selected.amount);
@@ -64,11 +62,15 @@ function RecordList({ user, records, filter, updateRecordsToRedux }: List) {
 
   const getSortData = (records: Record[]): Record[] => {
     const sortedData = records.sort((a, b) => {
-      if (a.recordDate < b.recordDate) {
+      const date1 = moment(a.recordDate);
+      const date2 = moment(b.recordDate);
+      if (date1.isBefore(date2)) {
         return 1;
+      } else {
+        return -1;
       }
-      return a.amount >= b.amount ? 1 : -1;
     });
+
     return sortedData;
   };
 
@@ -95,27 +97,26 @@ function RecordList({ user, records, filter, updateRecordsToRedux }: List) {
         modifiedRecord = recordList.filter(record => record.category === category);
       }
     }
-    // caution: update state only at the top level
+
     setData(getSortData(modifiedRecord));
   };
 
+  // every time records or filter change, regenerate a new recordList accordingly
   useEffect(() => {
     generateRecords();
-  }, [filter]);
+  }, [filter, records]);
 
   const updateAllRecordsToRedux = async (): Promise<void> => {
-    const response = await axios.get(`/api/getRecords/${currUser?._id}`);
+    const response = await axios.get(`${URL}/api/getRecords/${currUser?._id}`);
     const records: Record[] = response.data.records;
     if (updateRecordsToRedux) {
       updateRecordsToRedux(records);
-      console.log("updated");
     }
   };
 
   const onDeleteConfirm = async (recordID: string): Promise<void> => {
     const request = { data: { recordID } };
-    const response = await axios.delete("/api/deleteRecord", request);
-    console.log(response);
+    const response = await axios.delete(`${URL}/api/deleteRecord`, request);
     if (response.status === 202) {
       updateAllRecordsToRedux();
       message.success(response.data.message);
@@ -137,8 +138,8 @@ function RecordList({ user, records, filter, updateRecordsToRedux }: List) {
       message.warn("Please select a record date");
       return;
     }
-    if (amount === 0) {
-      message.warn("Amount must be greater than 0");
+    if (!amount) {
+      message.warn("Amount must be filled and it has to be greater than 0");
       return;
     }
 
@@ -167,7 +168,7 @@ function RecordList({ user, records, filter, updateRecordsToRedux }: List) {
       <List
         style={{ flex: 1 }}
         itemLayout="horizontal"
-        dataSource={getSortData(data)}
+        dataSource={data}
         renderItem={item => (
           <List.Item
             key={item._id}
@@ -193,7 +194,7 @@ function RecordList({ user, records, filter, updateRecordsToRedux }: List) {
                 placement="topLeft"
                 title="Are you sure you want to delete this record?"
                 onConfirm={() => {
-                  onDeleteConfirm(item._id);
+                  onDeleteConfirm(delID);
                 }}
                 okText="Yes"
                 cancelText="No"

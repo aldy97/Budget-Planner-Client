@@ -8,6 +8,7 @@ import { User } from "../../reducers/HomeReducer";
 import { Dispatch } from "redux";
 import { connect } from "react-redux";
 import { RootState } from "../../reducers/index";
+import { URL } from "../../utils/constants";
 
 interface ContenProps {
   user: User;
@@ -32,9 +33,12 @@ function Content({ user, updateUserInfo }: ContenProps) {
       _id: user._id,
       updatedFields: { budget: currBudget, threshold: currThreshold },
     };
-    const response = await axios.put("/api/updateUserInfo", request);
-    if (response.data.status) {
-      message.success(response.data.message);
+    const response = await axios.put(`${URL}/api/updateUserInfo`, request);
+    console.log(response);
+    if (response.status === 200) {
+      const user: User = response.data.user;
+      updateUserInfo(user);
+      message.success("Update success!");
     } else {
       message.error(response.data.message);
     }
@@ -64,22 +68,6 @@ function Content({ user, updateUserInfo }: ContenProps) {
               onChange={handleBudgetChange}
             />
           </div>
-          {/* <div>
-            <div>New Password</div>
-            <Input.Password
-              iconRender={visible =>
-                visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
-              }
-            ></Input.Password>
-          </div>
-          <div>
-            <div>Confirm Password</div>
-            <Input.Password
-              iconRender={visible =>
-                visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
-              }
-            ></Input.Password>
-          </div> */}
           <div>
             <div>Set reminder for my budget:</div>
             <Progress

@@ -7,6 +7,7 @@ import { UPDATE_USER_INFO, UpdateUserInfo } from "../../actions/HomeAction";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import { User } from "../../reducers/HomeReducer";
+import { URL } from "../../utils/constants";
 
 export const StyledForm = styled(Form)`
   width: 360px;
@@ -26,7 +27,7 @@ function LoginForm({ updateUserInfo }: LoginFormProps) {
 
   const handleLoginBtnClick = async () => {
     const request = { email, password };
-    const response = await axios.post("/api/login", request);
+    const response = await axios.post(`${URL}/api/login`, request);
     console.log(response);
     const messageText = response.data.message;
     if (response.status === 201) {
