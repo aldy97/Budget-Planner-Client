@@ -1,80 +1,84 @@
-import React, { useEffect } from "react";
-import RecordInput from "./RecordInput";
+import React, { useState, useEffect } from "react";
 import { Record } from "../components/Overview/Content";
-import { message, Modal } from "antd";
+import ExpenseSelector from "./ExpenseSelector";
+import IncomeSelector from "./IncomeSelector";
+import { message, Modal, Input, Space, DatePicker, Checkbox } from "antd";
+import { User } from "../reducers/HomeReducer";
+import moment, { Moment } from "moment";
 import axios from "axios";
-import { UpdateRecords, UPDATE_RECORDS } from "../actions/HomeAction";
-import { CLEAR_RECORD, ClearRecord } from "../actions/ModalAction";
+import { URL } from "../utils/constants";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import { RootState } from "../reducers/index";
+import { UpdateRecords, UPDATE_RECORDS } from "../actions/HomeAction";
 
 interface ModalProps {
   visible: boolean;
   setVisible: any;
-  user?: string;
-  title?: string;
-  recordDate?: string;
-  type?: string;
-  category?: string;
-  amount?: number;
-  description?: string;
-  clearRecord?: any;
-  updateRecordsToRedux?: any;
+  user?: User;
+  updateRecordsToRedux?: (records: Record[]) => void;
 }
 
 function AddRecordModal({
   visible,
   setVisible,
   user,
-  title,
-  recordDate,
-  type,
-  category,
-  amount,
-  description,
-  clearRecord,
   updateRecordsToRedux,
 }: ModalProps) {
-  // const [confirmLoading, setConfirmLoading] = useState(false);
+  const currUser = user as User;
+  const { TextArea } = Input;
 
-  const updateAllRecordsToRedux = async () => {
-    const response = await axios.get(`/api/getRecords/${user}`);
-    const records: Record[] = response.data;
-    updateRecordsToRedux(records);
+  const [title, setTitle] = useState("");
+  const [recordDate, setRecordDate] = useState(moment().format("LLL"));
+  const [type, setType] = useState<"expense" | "income">("expense");
+  const [category, setCategory] = useState("");
+  const [amount, setAmount] = useState("");
+  const [description, setDescription] = useState("");
+
+  const getRecords = async (): Promise<void> => {
+    const response = await axios.get(`/api/getRecords/${currUser._id}`);
+    const records: Record[] = response.data.records;
+    updateRecordsToRedux ? updateRecordsToRedux(records) : null;
   };
 
   useEffect(() => {
-    updateAllRecordsToRedux();
-  }, []);
+    getRecords();
+  });
 
-  const handleOk = async () => {
+  const onOk = async (): Promise<void> => {
+    if (!category) {
+      message.error("Category is not selected");
+      return;
+    }
+
+    if (!recordDate) {
+      message.error("Record date is not selected");
+      return;
+    }
+
+    if (parseInt(amount) <= 0) {
+      message.error("Amount must be greater than 0");
+      return;
+    }
+
     const request = {
-      title,
-      user,
+      title: title || "No title",
+      userID: currUser._id,
       recordDate,
       type,
       category,
       amount,
-      description,
+      description: description || "No description",
     };
-    if (!category) {
-      message.warn("Please choose a category");
-      return;
-    }
-    if (!recordDate) {
-      message.warn("please choose a date");
-      return;
-    }
-    const response = await axios.post("/api/createRecord", request);
+
+    const response = await axios.post(`${URL}/api/createRecord`, request);
+    console.log(response);
     setVisible(false);
-    if (response.data.status) {
+    if (response.status === 201) {
       message.success(response.data.message);
     } else {
       message.error(response.data.message);
     }
-    // clearRecord();
-    updateAllRecordsToRedux();
   };
 
   const handleCancel = () => {
@@ -85,35 +89,86 @@ function AddRecordModal({
     <Modal
       title="Please fill record details"
       visible={visible}
-      onOk={handleOk}
+      onOk={onOk}
       confirmLoading={false}
       onCancel={handleCancel}
     >
-      <RecordInput></RecordInput>
+      <Space direction="vertical">
+        <div>
+          <div>Title:</div>
+          <Input
+            onChange={e => {
+              setTitle(e.target.value);
+            }}
+          ></Input>
+        </div>
+        <div>
+          <div>Type:</div>
+          <Checkbox
+            checked={type === "expense"}
+            onChange={() => {
+              setType("expense");
+              setCategory("");
+            }}
+          >
+            Expense
+          </Checkbox>
+          <Checkbox
+            checked={type === "income"}
+            onChange={() => {
+              setType("income");
+              setCategory("");
+            }}
+          >
+            Income
+          </Checkbox>
+        </div>
+        <div>
+          <div>Category:</div>
+          {type === "expense" && <ExpenseSelector setCategory={setCategory} />}
+          {type === "income" && <IncomeSelector setCategory={setCategory} />}
+        </div>
+        <div>
+          <div>Amount:</div>
+          <Input
+            onChange={e => {
+              setAmount(e.target.value);
+            }}
+            prefix="$"
+            suffix="CAD"
+            type="number"
+          ></Input>
+        </div>
+        <div>
+          <div>Date:</div>
+          <DatePicker
+            onChange={(value: Moment | null, dateString: string) => {
+              setRecordDate(dateString);
+            }}
+          />
+        </div>
+        <div>
+          <div>Description:</div>
+          <TextArea
+            maxLength={50}
+            onChange={e => {
+              setDescription(e.target.value);
+            }}
+          ></TextArea>
+        </div>
+      </Space>
     </Modal>
   );
 }
 
 const mapState = (state: RootState) => {
   return {
-    user: state.HomeReducer.uid,
-    title: state.ModalReducer.title,
-    recordDate: state.ModalReducer.recordDate,
-    type: state.ModalReducer.recordType,
-    category: state.ModalReducer.category,
-    amount: state.ModalReducer.amount,
-    description: state.ModalReducer.description,
+    user: state.HomeReducer.user,
   };
 };
 
 const mapDispatch = (dispatch: Dispatch) => {
   return {
-    clearRecord() {
-      const action: ClearRecord = {
-        type: CLEAR_RECORD,
-      };
-      dispatch(action);
-    },
     updateRecordsToRedux(records: Record[]) {
       const action: UpdateRecords = {
         type: UPDATE_RECORDS,

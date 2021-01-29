@@ -1,30 +1,18 @@
 import React, { useState } from "react";
 import { StyledForm } from "./LoginForm";
 import { Form, Input, Button, message } from "antd";
+import { UPDATE_USER_INFO, UpdateUserInfo } from "../../actions/HomeAction";
+import { User } from "../../reducers/HomeReducer";
 import axios from "axios";
 import { Redirect } from "react-router-dom";
-import {
-  UPDATE_USER_EMAIL,
-  UpdateEmail,
-  UpdateUID,
-  UPDATE_USER_ID,
-  UPDATE_USER_NAME,
-  UpdateName,
-} from "../../actions/HomeAction";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
 
 interface RegisterFormProps {
-  updateEmail: (email: string) => void;
-  updateUserID: (id: string) => void;
-  updateName: (name: string) => void;
+  updateUserInfo: (user: User) => void;
 }
 
-function RegisterFrom({
-  updateEmail,
-  updateName,
-  updateUserID,
-}: RegisterFormProps): JSX.Element {
+function RegisterFrom({ updateUserInfo }: RegisterFormProps): JSX.Element {
   const [isRegistered, setIsRegistered] = useState(false);
 
   const [email, setEmail] = useState("");
@@ -61,9 +49,6 @@ function RegisterFrom({
     const response = await axios.post(`/api/register`, request);
     if (response.data.result === "succ") {
       message.success("Registration Success!");
-      updateEmail(email);
-      updateUserID(response.data.uid);
-      updateName(response.data.name);
       setIsRegistered(true);
     } else {
       message.error(response.data.message);
@@ -113,16 +98,11 @@ function RegisterFrom({
 
 const mapDispatch = (dispatch: Dispatch) => {
   return {
-    updateEmail(email: string) {
-      const action: UpdateEmail = { type: UPDATE_USER_EMAIL, email };
-      dispatch(action);
-    },
-    updateUserID(uid: string) {
-      const action: UpdateUID = { type: UPDATE_USER_ID, uid };
-      dispatch(action);
-    },
-    updateName(name: string) {
-      const action: UpdateName = { type: UPDATE_USER_NAME, name };
+    updateUserInfo(user: User) {
+      const action: UpdateUserInfo = {
+        type: UPDATE_USER_INFO,
+        user,
+      };
       dispatch(action);
     },
   };

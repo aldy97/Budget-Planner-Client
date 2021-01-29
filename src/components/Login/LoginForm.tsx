@@ -3,22 +3,10 @@ import styled from "styled-components";
 import { Form, Input, Button, Checkbox, message } from "antd";
 import axios from "axios";
 import { Redirect } from "react-router-dom";
-import {
-  UPDATE_BUDGET,
-  UpdateBudget,
-  UPDATE_BUDGET_THRESHOLD,
-  UpdateBudgetThreshold,
-} from "../../actions/AccountAction";
-import {
-  UPDATE_USER_EMAIL,
-  UpdateEmail,
-  UpdateUID,
-  UPDATE_USER_ID,
-  UPDATE_USER_NAME,
-  UpdateName,
-} from "../../actions/HomeAction";
+import { UPDATE_USER_INFO, UpdateUserInfo } from "../../actions/HomeAction";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
+import { User } from "../../reducers/HomeReducer";
 
 export const StyledForm = styled(Form)`
   width: 360px;
@@ -27,20 +15,10 @@ export const StyledForm = styled(Form)`
 `;
 
 interface LoginFormProps {
-  updateEmail: (email: string) => void;
-  updateUserID: (id: string) => void;
-  updateName: (name: string) => void;
-  updateBudget: (budget: number) => void;
-  updateThreshold: (threshold: number) => void;
+  updateUserInfo?: (user: User) => void;
 }
 
-function LoginForm({
-  updateEmail,
-  updateUserID,
-  updateName,
-  updateBudget,
-  updateThreshold,
-}: LoginFormProps) {
+function LoginForm({ updateUserInfo }: LoginFormProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -49,16 +27,13 @@ function LoginForm({
   const handleLoginBtnClick = async () => {
     const request = { email, password };
     const response = await axios.post("/api/login", request);
-    const isLogin = response.data.login;
+    console.log(response);
     const messageText = response.data.message;
-    if (isLogin) {
+    if (response.status === 201) {
+      const user: User = response.data.user;
       message.success("Login Success!");
-      updateEmail(email);
-      updateUserID(response.data.uid);
-      updateName(response.data.name);
+      updateUserInfo ? updateUserInfo(user) : null;
       setIsLogin(true);
-      updateBudget(response.data.budget);
-      updateThreshold(response.data.threshold);
     } else {
       message.error(messageText);
     }
@@ -106,29 +81,10 @@ function LoginForm({
 
 const mapDispatch = (dispatch: Dispatch) => {
   return {
-    updateEmail(email: string) {
-      const action: UpdateEmail = { type: UPDATE_USER_EMAIL, email };
-      dispatch(action);
-    },
-    updateUserID(uid: string) {
-      const action: UpdateUID = { type: UPDATE_USER_ID, uid };
-      dispatch(action);
-    },
-    updateName(name: string) {
-      const action: UpdateName = { type: UPDATE_USER_NAME, name };
-      dispatch(action);
-    },
-    updateBudget(budget: number) {
-      const action: UpdateBudget = {
-        type: UPDATE_BUDGET,
-        budget,
-      };
-      dispatch(action);
-    },
-    updateThreshold(threshold: number) {
-      const action: UpdateBudgetThreshold = {
-        type: UPDATE_BUDGET_THRESHOLD,
-        threshold,
+    updateUserInfo(user: User) {
+      const action: UpdateUserInfo = {
+        type: UPDATE_USER_INFO,
+        user,
       };
       dispatch(action);
     },

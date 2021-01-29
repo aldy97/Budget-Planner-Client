@@ -3,7 +3,6 @@ import { HomeReducer, HomeReducerProps } from "./HomeReducer";
 import { ModalReducer, ModalReducerProps } from "./ModalReducer";
 import { FilterReducer, FilterReducerProps } from "./FilterReducer";
 import { EditModalReducer, EditModalReducerProps } from "./EditModalReducer";
-import { AccountReducer, AccountReducerProps } from "./AccountReducer";
 import { composeWithDevTools } from "redux-devtools-extension";
 
 export interface RootState {
@@ -11,7 +10,6 @@ export interface RootState {
   ModalReducer: ModalReducerProps;
   FilterReducer: FilterReducerProps;
   EditModalReducer: EditModalReducerProps;
-  AccountReducer: AccountReducerProps;
 }
 
 const rootReducer = combineReducers({
@@ -19,7 +17,6 @@ const rootReducer = combineReducers({
   ModalReducer,
   FilterReducer,
   EditModalReducer,
-  AccountReducer,
 });
 
 export const configureStore = () => {

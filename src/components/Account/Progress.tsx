@@ -16,7 +16,7 @@ function ProgressBar({ threshold, changeThreshold }: ProgressBarProps): JSX.Elem
   };
   return (
     <>
-      <Progress percent={threshold} />
+      <Progress percent={threshold} data-test='bar' />
       <Button.Group>
         <Button onClick={handleMinusBtnClick} icon={<MinusOutlined />} />
         <Button onClick={handlePlusBtnClick} icon={<PlusOutlined />} />

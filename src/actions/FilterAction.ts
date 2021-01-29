@@ -1,20 +1,9 @@
-export const TOGGLEFILTER = "toogle_filter";
-export const CHOOSEMONTH = "choose_month";
-export const CHOOSECATEGORY = "choose_category";
+import { Filter } from "../reducers/FilterReducer";
+export const UPDATE_FILTER = "update_filter";
 
-export interface ToggleFilter {
-  type: typeof TOGGLEFILTER;
-  enabled: boolean;
+export interface UpdateFilter {
+  type: typeof UPDATE_FILTER;
+  filter: Filter;
 }
 
-export interface ChooseMonth {
-  type: typeof CHOOSEMONTH;
-  month: string;
-}
-
-export interface ChooseCategory {
-  type: typeof CHOOSECATEGORY;
-  category: string;
-}
-
-export type FilterAction = ToggleFilter | ChooseCategory | ChooseMonth;
+export type FilterAction = UpdateFilter;

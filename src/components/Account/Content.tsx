@@ -2,39 +2,22 @@ import React, { useState } from "react";
 import { Layout, Input, Space, Button } from "antd";
 import { message } from "antd";
 import axios from "axios";
-import {
-  UPDATE_BUDGET,
-  UpdateBudget,
-  UPDATE_BUDGET_THRESHOLD,
-  UpdateBudgetThreshold,
-} from "../../actions/AccountAction";
+import Progress from "./Progress";
+import { UPDATE_USER_INFO, UpdateUserInfo } from "../../actions/HomeAction";
+import { User } from "../../reducers/HomeReducer";
 import { Dispatch } from "redux";
 import { connect } from "react-redux";
 import { RootState } from "../../reducers/index";
-import Progress from "./Progress";
 
 interface ContenProps {
-  name: string;
-  email: string;
-  id: string;
-  budget: number;
-  threshold: number;
-  updateBudgetToRedux: (budget: number) => void;
-  updateThresholdToRedux: (threshold: number) => void;
+  user: User;
+  updateUserInfo: (user: User) => void;
 }
 
-function Content({
-  name,
-  email,
-  id,
-  budget,
-  threshold,
-  updateBudgetToRedux,
-  updateThresholdToRedux,
-}: ContenProps) {
+function Content({ user, updateUserInfo }: ContenProps) {
   const { Content } = Layout;
-  const [currBudget, setCurrBudget] = useState<number>(budget);
-  const [currThreshold, setCurrThrehold] = useState<number>(threshold);
+  const [currBudget, setCurrBudget] = useState<number>(user.budget);
+  const [currThreshold, setCurrThrehold] = useState<number>(user.threshold);
 
   const handleBudgetChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     setCurrBudget(parseInt(e.target.value));
@@ -46,14 +29,12 @@ function Content({
       return;
     }
     const request = {
-      _id: id,
+      _id: user._id,
       updatedFields: { budget: currBudget, threshold: currThreshold },
     };
     const response = await axios.put("/api/updateUserInfo", request);
     if (response.data.status) {
       message.success(response.data.message);
-      updateBudgetToRedux(response.data.updatedUserInfo.budget as number);
-      updateThresholdToRedux(response.data.updatedUserInfo.threshold);
     } else {
       message.error(response.data.message);
     }
@@ -68,11 +49,11 @@ function Content({
         <Space direction="vertical" size="large">
           <div>
             <div>Name:</div>
-            <Input defaultValue={name} disabled></Input>
+            <Input defaultValue={user.name} disabled data-test="name"></Input>
           </div>
           <div>
             <div>Email:</div>
-            <Input defaultValue={email} style={{ width: 224 }} disabled></Input>
+            <Input defaultValue={user.email} style={{ width: 224 }} disabled></Input>
           </div>
           <div>
             <div>Set monthly budget:</div>
@@ -117,27 +98,16 @@ function Content({
 
 const mapState = (state: RootState) => {
   return {
-    name: state.HomeReducer.name,
-    email: state.HomeReducer.email,
-    id: state.HomeReducer.uid,
-    budget: state.AccountReducer.budget,
-    threshold: state.AccountReducer.threshold,
+    user: state.HomeReducer.user,
   };
 };
 
 const mapDispatch = (dispatch: Dispatch) => {
   return {
-    updateBudgetToRedux(budget: number): void {
-      const action: UpdateBudget = {
-        type: UPDATE_BUDGET,
-        budget,
-      };
-      dispatch(action);
-    },
-    updateThresholdToRedux(threshold: number): void {
-      const action: UpdateBudgetThreshold = {
-        type: UPDATE_BUDGET_THRESHOLD,
-        threshold,
+    updateUserInfo(user: User) {
+      const action: UpdateUserInfo = {
+        type: UPDATE_USER_INFO,
+        user,
       };
       dispatch(action);
     },

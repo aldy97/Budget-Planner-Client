@@ -34,6 +34,7 @@ export const ExpenseCategories = [
   "Maintainance",
   "Donation",
 ];
+
 export const IncomeCategories = [
   "Salary",
   "Part-time",
@@ -41,3 +42,5 @@ export const IncomeCategories = [
   "Gifts",
   "Others",
 ];
+
+export const URL = "http://localhost:7001";

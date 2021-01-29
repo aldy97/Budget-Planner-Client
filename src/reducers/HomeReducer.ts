@@ -1,23 +1,37 @@
 import { Record } from "../components/Overview/Content";
-import {
-  UPDATE_USER_EMAIL,
-  UPDATE_USER_NAME,
-  UPDATE_USER_ID,
-  UPDATE_RECORDS,
-  HomeAction,
-} from "../actions/HomeAction";
+import { UPDATE_USER_INFO, UPDATE_RECORDS, HomeAction } from "../actions/HomeAction";
+
+export interface User {
+  name: string;
+  _id: string;
+  bio: string;
+  email: string;
+  password: string;
+  budget: number;
+  threshold: number;
+  records: Record[];
+  createdOn: string;
+  updatedOn: string;
+}
 
 export interface HomeReducerProps {
-  email: string;
-  name: string;
-  uid: string;
+  user: User;
   records: Record[];
 }
 
 const initialState: HomeReducerProps = {
-  email: "",
-  name: "",
-  uid: "",
+  user: {
+    name: "",
+    _id: "",
+    bio: "",
+    email: "",
+    password: "",
+    budget: 0,
+    threshold: 0,
+    records: [],
+    createdOn: "",
+    updatedOn: "",
+  },
   records: [],
 };
 
@@ -26,14 +40,8 @@ export const HomeReducer = (
   action: HomeAction
 ): HomeReducerProps => {
   switch (action.type) {
-    case UPDATE_USER_EMAIL: {
-      return { ...state, email: action.email };
-    }
-    case UPDATE_USER_NAME: {
-      return { ...state, name: action.name };
-    }
-    case UPDATE_USER_ID: {
-      return { ...state, uid: action.uid };
+    case UPDATE_USER_INFO: {
+      return { ...state, user: action.user };
     }
     case UPDATE_RECORDS: {
       return { ...state, records: action.records };

@@ -3,8 +3,6 @@ import { UPDATE_CATEGORY, UpdateCategory } from "../actions/ModalAction";
 import { connect } from "react-redux";
 import { RootState } from "../reducers/index";
 import { Dispatch } from "redux";
-import ExpenseSelector from "./ExpenseSelector";
-import IncomeSelector from "./IncomeSelector";
 
 interface CategoryInputProps {
   recordType: string;
@@ -17,11 +15,7 @@ function CategoryInput({ recordType, updateCategoryToRedux }: CategoryInputProps
     updateCategoryToRedux("");
   }, [recordType]);
 
-  return recordType === "expense" ? (
-    <ExpenseSelector></ExpenseSelector>
-  ) : (
-    <IncomeSelector></IncomeSelector>
-  );
+  return <div></div>;
 }
 
 const mapState = (state: RootState) => {

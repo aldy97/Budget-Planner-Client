@@ -22,15 +22,15 @@ const StyledHint = styled.div`
 `;
 
 export interface Record {
+  _id: string;
   amount: number;
   description: string;
   title: string;
   type: string;
   category: string;
+  recordDate: string;
   createdOn: string;
   updatedOn: string;
-  _id: string;
-  recordDate: string;
 }
 
 interface ContentProps {
@@ -73,8 +73,16 @@ function Content({ records }: ContentProps) {
           <SummaryBox type="income" amount={incomeMonthly}></SummaryBox>
         </SummaryWrapper>
         <ListsWrapper>
-          <RecordList maxLength={5} type="expense"></RecordList>
-          <RecordList maxLength={5} type="income"></RecordList>
+          <RecordList
+            records={records as Record[]}
+            maxLength={5}
+            type="expense"
+          ></RecordList>
+          <RecordList
+            records={records as Record[]}
+            maxLength={5}
+            type="income"
+          ></RecordList>
         </ListsWrapper>
         <StyledHint>Only 5 most recent records are shown</StyledHint>
       </div>

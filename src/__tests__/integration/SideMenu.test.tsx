@@ -10,7 +10,7 @@ const mockStore = configureStore([]);
 describe("SideMenu", () => {
   let store;
   let wrapper;
-  let selected = 0;
+  const selected = 0;
   let menuitems;
 
   beforeEach(() => {

@@ -1,19 +1,16 @@
 import React from "react";
 import { IncomeCategories } from "../utils/constants";
 import { Select } from "antd";
-import { UPDATE_CATEGORY, UpdateCategory } from "../actions/ModalAction";
-import { connect } from "react-redux";
-import { Dispatch } from "redux";
 
 const { Option } = Select;
 
 interface SelectProps {
-  updateCategoryToRedux: (cat: string) => void;
+  setCategory: React.Dispatch<React.SetStateAction<string>>;
 }
 
-function IncomeSelector({ updateCategoryToRedux }: SelectProps) {
+function IncomeSelector({ setCategory }: SelectProps) {
   const handleCategoryChange = (value: any): void => {
-    updateCategoryToRedux(value);
+    setCategory(value);
   };
 
   return (
@@ -33,16 +30,4 @@ function IncomeSelector({ updateCategoryToRedux }: SelectProps) {
   );
 }
 
-const mapDispatch = (dispatch: Dispatch) => {
-  return {
-    updateCategoryToRedux(category: string) {
-      const action: UpdateCategory = {
-        type: UPDATE_CATEGORY,
-        category,
-      };
-      dispatch(action);
-    },
-  };
-};
-
-export default connect(null, mapDispatch)(IncomeSelector);
+export default IncomeSelector;

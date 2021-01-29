@@ -14,14 +14,13 @@ function AmountInput({ updateCategoryToRedux }: AmountInputProps) {
   };
 
   return (
-    <>
-      <InputNumber
-        style={{ display: "block" }}
-        defaultValue={0}
-        formatter={value => `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-        onChange={onChange}
-      />
-    </>
+    <InputNumber
+      style={{ display: "block" }}
+      defaultValue={0}
+      formatter={value => `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+      onChange={onChange}
+      data-test="input"
+    />
   );
 }
 

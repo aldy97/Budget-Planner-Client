@@ -1,49 +1,45 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Switch, Space, Select, DatePicker } from "antd";
 import { ExpenseCategories, IncomeCategories } from "../../utils/constants";
-import {
-  TOGGLEFILTER,
-  ToggleFilter,
-  CHOOSEMONTH,
-  ChooseMonth,
-  ChooseCategory,
-  CHOOSECATEGORY,
-} from "../../actions/FilterAction";
+import { UPDATE_FILTER, UpdateFilter } from "../../actions/FilterAction";
 import moment from "moment";
 import { connect } from "react-redux";
 import { RootState } from "../../reducers/index";
 import { Dispatch } from "redux";
+import { Filter } from "../../reducers/FilterReducer";
 
 const { Option, OptGroup } = Select;
 
 interface FilterProps {
-  enabled: boolean;
-  month: string;
-  category: string;
-  toggleSwitch: (open: boolean) => void;
-  updateMonthToRedux: (month: string) => void;
-  updateCategoryToRedux: (category: string) => void;
+  filter: Filter;
+  updateFilter: (filter: Filter) => void;
 }
 
-function Filter({
-  enabled,
-  month,
-  category,
-  toggleSwitch,
-  updateMonthToRedux,
-  updateCategoryToRedux,
-}: FilterProps) {
+function RecordsFilter({ filter, updateFilter }: FilterProps) {
+  const [enabled, setEnabled] = useState(false);
+  const [month, setMonth] = useState("");
+  const [category, setCategory] = useState("");
+
   const handleSwitchChange = () => {
-    toggleSwitch(!enabled);
+    setEnabled(!enabled);
+    const filter: Filter = { enabled, month, category };
+    updateFilter(filter);
   };
 
   const handleMonthChange = (date: any, dateString: string) => {
-    updateMonthToRedux(dateString);
+    setMonth(dateString);
+    const filter: Filter = { enabled, month, category };
+    updateFilter(filter);
   };
 
   const handleCategoryChange = (value: string) => {
-    updateCategoryToRedux(value);
+    setCategory(value);
   };
+
+  useEffect(() => {
+    const filter: Filter = { enabled, month, category };
+    updateFilter(filter);
+  }, [enabled, month, category]);
 
   return (
     <Space>
@@ -89,36 +85,20 @@ function Filter({
 
 const mapState = (state: RootState) => {
   return {
-    enabled: state.FilterReducer.enabled,
-    month: state.FilterReducer.month,
-    category: state.FilterReducer.category,
+    filter: state.FilterReducer.filter,
   };
 };
 
 const mapDispatch = (dispatch: Dispatch) => {
   return {
-    toggleSwitch(enabled: boolean) {
-      const action: ToggleFilter = {
-        type: TOGGLEFILTER,
-        enabled,
-      };
-      dispatch(action);
-    },
-    updateMonthToRedux(month: string) {
-      const action: ChooseMonth = {
-        type: CHOOSEMONTH,
-        month,
-      };
-      dispatch(action);
-    },
-    updateCategoryToRedux(category: string) {
-      const action: ChooseCategory = {
-        type: CHOOSECATEGORY,
-        category,
+    updateFilter(filter: Filter) {
+      const action: UpdateFilter = {
+        type: UPDATE_FILTER,
+        filter,
       };
       dispatch(action);
     },
   };
 };
 
-export default connect(mapState, mapDispatch)(Filter);
+export default connect(mapState, mapDispatch)(RecordsFilter);

@@ -1,4 +1,3 @@
-import Enzyme from "enzyme";
-export const findTestWrapper = (wrapper: Enzyme.ReactWrapper, tag: string) => {
+export const findTestWrapper = (wrapper: any, tag: string) => {
   return wrapper.find(`[data-test="${tag}"]`);
 };

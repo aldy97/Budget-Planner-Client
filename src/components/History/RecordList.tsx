@@ -1,44 +1,22 @@
 import React, { useState, useEffect } from "react";
+import { User } from "../../reducers/HomeReducer";
 import ListItemMeta from "./ListItemMeta";
 import { COLORS } from "../../utils/constants";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { Record } from "../Overview/Content";
 import axios from "axios";
 import { List, message, Popconfirm, Button } from "antd";
-import { UpdateRecords, UPDATE_RECORDS } from "../../actions/HomeAction";
-import {
-  UPDATE_RECORD_ID,
-  UpdateRecordID,
-  EDIT_TITLE,
-  EditTitle,
-  EditDescription,
-  EDIT_DESCRIPTION,
-  EditAmount,
-  EDIT_AMOUNT,
-  EditRecordDate,
-  EDIT_RECORD_DATE,
-} from "../../actions/EditModallAction";
 import { connect } from "react-redux";
 import { RootState } from "../../reducers/index";
 import { Dispatch } from "redux";
+import { UpdateRecords, UPDATE_RECORDS } from "../../actions/HomeAction";
+import { Filter } from "../../reducers/FilterReducer";
 
 interface List {
-  records: Record[];
-  recordID: string;
-  enabled: boolean;
-  month: string;
-  category: string;
-  updateRecordsToRedux: (records: Record[]) => void;
-  updateRecordIDToRedux: (id: string) => void;
-  updateTitleToRedux: (title: string) => void;
-  updateDescToRedux: (desc: string) => void;
-  updateAmountToRedux: (amount: number) => void;
-  updateDateToRedux: (date: string) => void;
-  user: string;
-  recordTitle: string;
-  amount: number;
-  recordDate: string;
-  description: string;
+  user?: User;
+  records?: Record[];
+  filter?: Filter;
+  updateRecordsToRedux?: (records: Record[]) => void;
 }
 
 interface UpdateRequest {
@@ -48,25 +26,41 @@ interface UpdateRequest {
   };
 }
 
-function RecordList({
-  records,
-  recordID,
-  enabled,
-  month,
-  category,
-  updateRecordsToRedux,
-  updateRecordIDToRedux,
-  updateTitleToRedux,
-  updateDescToRedux,
-  updateAmountToRedux,
-  updateDateToRedux,
-  user,
-  recordTitle,
-  amount,
-  recordDate,
-  description,
-}: List) {
-  const [data, setData] = useState<Record[]>([]);
+const dummySelected: Record = {
+  _id: "string",
+  amount: 0,
+  description: "",
+  title: "",
+  type: "",
+  category: "",
+  recordDate: "",
+  createdOn: "",
+  updatedOn: "",
+};
+
+function RecordList({ user, records, filter, updateRecordsToRedux }: List) {
+  const recordList = records || [];
+  const currUser = user ? user : null;
+  const [data, setData] = useState<Record[]>(recordList);
+  const [selected, setSelected] = useState<Record>(dummySelected);
+
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [amount, setAmount] = useState(0);
+  const [recordDate, setRecordDate] = useState("");
+
+  const [delID, setDelID] = useState("");
+
+  useEffect(() => {
+    setData(recordList);
+  }, [records]);
+
+  useEffect(() => {
+    setTitle(selected.title);
+    setDescription(selected.description);
+    setAmount(selected.amount);
+    setRecordDate(selected.recordDate);
+  }, [selected]);
 
   const getSortData = (records: Record[]): Record[] => {
     const sortedData = records.sort((a, b) => {
@@ -80,43 +74,49 @@ function RecordList({
 
   const generateRecords = (): void => {
     let modifiedRecord: Record[] = [];
+    const enabled = filter?.enabled;
+    const month = filter?.month;
+    const category = filter?.category;
     if (!enabled || (month === "" && category === "")) {
-      modifiedRecord = records;
+      modifiedRecord = recordList;
     } else {
       if (month && category && month !== "" && category !== "") {
-        modifiedRecord = records.filter(
+        modifiedRecord = recordList.filter(
           record =>
             record.category === category && record.recordDate.slice(0, 7) === month
         );
       } else if (!month && !category) {
-        modifiedRecord = records;
+        modifiedRecord = recordList;
       } else if (month && month !== "") {
-        modifiedRecord = records.filter(
+        modifiedRecord = recordList.filter(
           record => record.recordDate.slice(0, 7) === month
         );
       } else {
-        modifiedRecord = records.filter(record => record.category === category);
+        modifiedRecord = recordList.filter(record => record.category === category);
       }
     }
-
     // caution: update state only at the top level
     setData(getSortData(modifiedRecord));
   };
 
   useEffect(() => {
     generateRecords();
-  }, [enabled, month, category, records]);
+  }, [filter]);
 
   const updateAllRecordsToRedux = async (): Promise<void> => {
-    const response = await axios.get(`/api/getRecords/${user}`);
-    const records: Record[] = response.data;
-    updateRecordsToRedux(records);
+    const response = await axios.get(`/api/getRecords/${currUser?._id}`);
+    const records: Record[] = response.data.records;
+    if (updateRecordsToRedux) {
+      updateRecordsToRedux(records);
+      console.log("updated");
+    }
   };
 
-  const handleDelBtnClick = async (recordID: string): Promise<void> => {
+  const onDeleteConfirm = async (recordID: string): Promise<void> => {
     const request = { data: { recordID } };
     const response = await axios.delete("/api/deleteRecord", request);
-    if (response.data.succ) {
+    console.log(response);
+    if (response.status === 202) {
       updateAllRecordsToRedux();
       message.success(response.data.message);
     } else {
@@ -124,16 +124,11 @@ function RecordList({
     }
   };
 
-  // 如果item未被选中，点击修改会选中该item并把item信息更新到redux
   const handleEditBtnClick = (record: Record): void => {
-    if (recordID !== record._id) {
-      updateRecordIDToRedux(record._id);
-      updateTitleToRedux(record.title);
-      updateDescToRedux(record.description);
-      updateAmountToRedux(record.amount);
-      updateDateToRedux(record.recordDate);
+    if (record._id !== selected._id) {
+      setSelected(record);
     } else {
-      updateRecordIDToRedux("");
+      setSelected(dummySelected);
     }
   };
 
@@ -146,22 +141,22 @@ function RecordList({
       message.warn("Amount must be greater than 0");
       return;
     }
-    const edittedTitle = recordTitle === "" ? "No title" : recordTitle;
-    const edittedDesc = description === "" ? "No description" : description;
+
     const request: UpdateRequest = {
-      _id: recordID,
+      _id: selected._id,
       updatedFields: {
-        title: edittedTitle,
+        title: title || "No title",
         amount,
         recordDate,
-        description: edittedDesc,
+        description: description || "No description",
       },
     };
     const response = await axios.put("/api/updateRecord", request);
-    updateRecordIDToRedux("");
-    updateAllRecordsToRedux();
-    if (response.data.status) {
+
+    if (response.status === 200) {
       message.success(response.data.message);
+      updateAllRecordsToRedux();
+      setSelected(dummySelected);
     } else {
       message.error(response.data.message);
     }
@@ -172,9 +167,10 @@ function RecordList({
       <List
         style={{ flex: 1 }}
         itemLayout="horizontal"
-        dataSource={data}
+        dataSource={getSortData(data)}
         renderItem={item => (
           <List.Item
+            key={item._id}
             actions={[
               <EditOutlined
                 onClick={() => {
@@ -184,7 +180,7 @@ function RecordList({
                 key="edit-item"
               ></EditOutlined>,
               <Button
-                disabled={recordID !== item._id}
+                disabled={selected._id !== item._id}
                 type="primary"
                 key="confirm-edit"
                 size="small"
@@ -195,20 +191,31 @@ function RecordList({
               <Popconfirm
                 key="delete-item"
                 placement="topLeft"
-                title="Deletion is permanent. Do you want to delete this record?"
+                title="Are you sure you want to delete this record?"
                 onConfirm={() => {
-                  handleDelBtnClick(item._id);
+                  onDeleteConfirm(item._id);
                 }}
                 okText="Yes"
                 cancelText="No"
               >
                 <DeleteOutlined
+                  onClick={() => {
+                    setDelID(item._id);
+                  }}
                   style={{ color: "#f5222d", cursor: "pointer" }}
                 ></DeleteOutlined>
               </Popconfirm>,
             ]}
           >
-            <ListItemMeta item={item}></ListItemMeta>
+            <ListItemMeta
+              selected={selected}
+              item={item}
+              setTitle={setTitle}
+              setDescription={setDescription}
+              setAmount={setAmount}
+              setRecordDate={setRecordDate}
+              data-test="list-item"
+            ></ListItemMeta>
           </List.Item>
         )}
       />
@@ -218,60 +225,18 @@ function RecordList({
 
 const mapState = (state: RootState) => {
   return {
-    user: state.HomeReducer.uid,
+    user: state.HomeReducer.user,
     records: state.HomeReducer.records,
-    enabled: state.FilterReducer.enabled,
-    month: state.FilterReducer.month,
-    category: state.FilterReducer.category,
-    recordID: state.EditModalReducer.recordID,
-    recordTitle: state.EditModalReducer.title,
-    amount: state.EditModalReducer.amount,
-    recordDate: state.EditModalReducer.date,
-    description: state.EditModalReducer.description,
+    filter: state.FilterReducer.filter,
   };
 };
 
 const mapDispatch = (dispatch: Dispatch) => {
   return {
-    updateRecordsToRedux(records: Record[]): void {
+    updateRecordsToRedux(records: Record[]) {
       const action: UpdateRecords = {
         type: UPDATE_RECORDS,
         records,
-      };
-      dispatch(action);
-    },
-    updateRecordIDToRedux(recordID: string): void {
-      const action: UpdateRecordID = {
-        type: UPDATE_RECORD_ID,
-        recordID,
-      };
-      dispatch(action);
-    },
-    updateTitleToRedux(title: string): void {
-      const action: EditTitle = {
-        type: EDIT_TITLE,
-        title,
-      };
-      dispatch(action);
-    },
-    updateDescToRedux(description: string): void {
-      const action: EditDescription = {
-        type: EDIT_DESCRIPTION,
-        description,
-      };
-      dispatch(action);
-    },
-    updateAmountToRedux(amount: number): void {
-      const action: EditAmount = {
-        type: EDIT_AMOUNT,
-        amount,
-      };
-      dispatch(action);
-    },
-    updateDateToRedux(date: string): void {
-      const action: EditRecordDate = {
-        type: EDIT_RECORD_DATE,
-        date,
       };
       dispatch(action);
     },

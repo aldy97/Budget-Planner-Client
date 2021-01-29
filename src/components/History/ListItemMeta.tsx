@@ -1,65 +1,36 @@
-import React from "react";
+import React, { useState } from "react";
 import Tag from "../Overview/CategoryTag";
 import { List, Input, InputNumber, DatePicker } from "antd";
 import { Record } from "../Overview/Content";
-import moment from "moment";
-import {
-  EDIT_TITLE,
-  EditTitle,
-  EditDescription,
-  EDIT_DESCRIPTION,
-  EditAmount,
-  EDIT_AMOUNT,
-  EDIT_RECORD_DATE,
-  EditRecordDate,
-} from "../../actions/EditModallAction";
-import { connect } from "react-redux";
-import { Dispatch } from "redux";
-import { RootState } from "../../reducers/index";
+import moment, { Moment } from "moment";
 
 interface MetaProps {
   item: Record;
-  recordID?: string;
-  updateTitle: (title: string) => void;
-  updateDesc: (desc: string) => void;
-  updateAmount: (amount: number) => void;
-  updateDate: (date: string) => void;
+  selected: Record;
+  setTitle: React.Dispatch<React.SetStateAction<string>>;
+  setDescription: React.Dispatch<React.SetStateAction<string>>;
+  setAmount: React.Dispatch<React.SetStateAction<number>>;
+  setRecordDate: React.Dispatch<React.SetStateAction<string>>;
 }
 
 // History内列表内容解构
 function ListItemMeta({
   item,
-  recordID,
-  updateTitle,
-  updateDesc,
-  updateAmount,
-  updateDate,
+  selected,
+  setTitle,
+  setDescription,
+  setAmount,
+  setRecordDate,
 }: MetaProps) {
-  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    updateTitle(e.target.value);
-  };
-
-  const handleDescChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    updateDesc(e.target.value);
-  };
-
-  const handleAmountChange = (value: string | number | undefined) => {
-    updateAmount(value as number);
-  };
-
-  const handleDateChange = (date: any, dateString: string) => {
-    updateDate(dateString);
-  };
-
   return (
     <>
       <List.Item.Meta
         title={
-          recordID === item._id ? (
+          selected._id === item._id ? (
             <Input
               allowClear
-              onChange={handleTitleChange}
               size="small"
+              onChange={e => setTitle(e.target.value)}
               style={{ width: 100 }}
               defaultValue={item.title}
             ></Input>
@@ -70,11 +41,11 @@ function ListItemMeta({
         description={
           <div>
             <Tag type={item.type} category={item.category}></Tag>
-            {recordID === item._id ? (
+            {selected._id === item._id ? (
               <Input
                 allowClear
-                onChange={handleDescChange}
                 size="middle"
+                onChange={e => setDescription(e.target.value)}
                 style={{ marginTop: 5 }}
                 defaultValue={item.description}
               ></Input>
@@ -85,22 +56,24 @@ function ListItemMeta({
         }
       />
       <div style={{ marginRight: 30, color: "#8c8c8c" }}>
-        {recordID === item._id ? (
+        {selected._id === item._id ? (
           <InputNumber
             size="small"
-            onChange={handleAmountChange}
             formatter={value => `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
             style={{ width: 80 }}
+            onChange={e => setAmount(e as number)}
             defaultValue={item.amount}
           ></InputNumber>
         ) : (
           <div>${item.amount}</div>
         )}
         <div>
-          {recordID === item._id ? (
+          {selected._id === item._id ? (
             <DatePicker
-              onChange={handleDateChange}
               allowClear={false}
+              onChange={(value: Moment | null, dateString: string) =>
+                setRecordDate(dateString)
+              }
               defaultValue={moment(item.recordDate)}
               size="small"
             ></DatePicker>
@@ -113,43 +86,4 @@ function ListItemMeta({
   );
 }
 
-const mapState = (state: RootState) => {
-  return {
-    recordID: state.EditModalReducer.recordID,
-  };
-};
-
-const mapDispatch = (dispatch: Dispatch) => {
-  return {
-    updateTitle(title: string) {
-      const action: EditTitle = {
-        type: EDIT_TITLE,
-        title,
-      };
-      dispatch(action);
-    },
-    updateDesc(description: string) {
-      const action: EditDescription = {
-        type: EDIT_DESCRIPTION,
-        description,
-      };
-      dispatch(action);
-    },
-    updateAmount(amount: number) {
-      const action: EditAmount = {
-        type: EDIT_AMOUNT,
-        amount,
-      };
-      dispatch(action);
-    },
-    updateDate(date: string) {
-      const action: EditRecordDate = {
-        type: EDIT_RECORD_DATE,
-        date,
-      };
-      dispatch(action);
-    },
-  };
-};
-
-export default connect(mapState, mapDispatch)(ListItemMeta);
+export default ListItemMeta;

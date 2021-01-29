@@ -1,26 +1,21 @@
 import React from "react";
 import { ExpenseCategories } from "../utils/constants";
 import { Select } from "antd";
-import { UPDATE_CATEGORY, UpdateCategory } from "../actions/ModalAction";
-import { connect } from "react-redux";
-import { Dispatch } from "redux";
 
 const { Option } = Select;
 
 interface SelectProps {
-  updateCategoryToRedux: (cat: string) => void;
+  setCategory: React.Dispatch<React.SetStateAction<string>>;
 }
 
-function ExpenseSelector({ updateCategoryToRedux }: SelectProps) {
-  const handleCategoryChange = (value: any): void => {
-    updateCategoryToRedux(value);
-  };
-
+function ExpenseSelector({ setCategory }: SelectProps) {
   return (
     <Select
       placeholder="Categories"
       style={{ width: 120 }}
-      onChange={handleCategoryChange}
+      onChange={(value: string) => {
+        setCategory(value);
+      }}
     >
       {ExpenseCategories.map((category, index) => {
         return (
@@ -33,16 +28,4 @@ function ExpenseSelector({ updateCategoryToRedux }: SelectProps) {
   );
 }
 
-const mapDispatch = (dispatch: Dispatch) => {
-  return {
-    updateCategoryToRedux(category: string) {
-      const action: UpdateCategory = {
-        type: UPDATE_CATEGORY,
-        category,
-      };
-      dispatch(action);
-    },
-  };
-};
-
-export default connect(null, mapDispatch)(ExpenseSelector);
+export default ExpenseSelector;

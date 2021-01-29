@@ -7,12 +7,14 @@ import { Layout } from "antd";
 import { connect } from "react-redux";
 import { RootState } from "../reducers/index";
 import { Redirect } from "react-router-dom";
+import { User } from "../reducers/HomeReducer";
 
 interface HeaderProps {
-  name?: string;
+  user?: User;
 }
 
-function Header({ name }: HeaderProps) {
+function Header({ user }: HeaderProps) {
+  const currUser = user as User;
   const { Header } = Layout;
   const [visivle, setVisible] = useState(false);
   const [isLogOut, setIsLogOut] = useState(false);
@@ -32,7 +34,7 @@ function Header({ name }: HeaderProps) {
         Add Record
       </Button>
       <div style={{ float: "right", marginRight: -33 }}>
-        <UserDropDown name={name as string}></UserDropDown>
+        <UserDropDown name={currUser.name}></UserDropDown>
       </div>
       <Modal visible={visivle} setVisible={setVisible}></Modal>
     </Header>
@@ -43,7 +45,7 @@ function Header({ name }: HeaderProps) {
 
 const mapState = (state: RootState) => {
   return {
-    name: state.HomeReducer.name,
+    user: state.HomeReducer.user,
   };
 };
 

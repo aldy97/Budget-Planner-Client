@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TitleInput can dispatch action to the reducer 1`] = `Array []`;
