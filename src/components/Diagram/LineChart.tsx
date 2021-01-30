@@ -15,6 +15,7 @@ interface LineChartProps {
 function LineChart({ type, records }: LineChartProps): JSX.Element {
   // 过去七天日期
   const [days, setDays] = useState<string[]>([]);
+
   // 过去七天每日的记录总额
   const [totalsInPastWeek, setTotalInPastWeek] = useState<number[]>([]);
 

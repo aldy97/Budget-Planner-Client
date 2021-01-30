@@ -2,9 +2,18 @@ import React, { useState, useEffect } from "react";
 import { Record } from "../components/Overview/Content";
 import ExpenseSelector from "./ExpenseSelector";
 import IncomeSelector from "./IncomeSelector";
-import { message, Modal, Input, Space, DatePicker, Checkbox } from "antd";
+import {
+  message,
+  Modal,
+  Input,
+  Space,
+  DatePicker,
+  Checkbox,
+  notification,
+  Button,
+} from "antd";
 import { User } from "../reducers/HomeReducer";
-import moment, { Moment } from "moment";
+import { Moment } from "moment";
 import axios from "axios";
 import { URL } from "../utils/constants";
 import { connect } from "react-redux";
@@ -16,6 +25,7 @@ interface ModalProps {
   visible: boolean;
   setVisible: any;
   user?: User;
+  records: Record[];
   updateRecordsToRedux?: (records: Record[]) => void;
 }
 
@@ -23,6 +33,7 @@ function AddRecordModal({
   visible,
   setVisible,
   user,
+  records,
   updateRecordsToRedux,
 }: ModalProps) {
   const currUser = user as User;
@@ -39,6 +50,33 @@ function AddRecordModal({
     const response = await axios.get(`${URL}/api/getRecords/${currUser._id}`);
     const records: Record[] = response.data.records;
     updateRecordsToRedux ? updateRecordsToRedux(records) : null;
+  };
+
+  // determines whether shows nitification after a new record is stored
+  const showNotification = (): void => {
+    const expense: number = records
+      .filter(record => record.type === "expense")
+      .map(record => record.amount)
+      .reduce((acc, curr) => acc + curr, 0);
+    if (
+      expense > (currUser.budget * currUser.threshold) / 100 &&
+      currUser.threshold &&
+      currUser.budget
+    ) {
+      const percentage = Math.min((expense * 100) / currUser.budget, 100);
+      const key = "notify user";
+      const btn = (
+        <Button type="primary" size="small" onClick={() => notification.close(key)}>
+          Confirm
+        </Button>
+      );
+      notification.open({
+        message: "Budget threshold notification",
+        description: `You have spent over ${percentage}% of your monthly budget ${currUser.budget}`,
+        btn,
+        key,
+      });
+    }
   };
 
   useEffect(() => {
@@ -75,13 +113,13 @@ function AddRecordModal({
       amount,
       description: description || "No description",
     };
-    console.log(request);
 
     const response = await axios.post(`${URL}/api/createRecord`, request);
     console.log(response);
     setVisible(false);
     if (response.status === 201) {
       message.success(response.data.message);
+      showNotification();
     } else {
       message.error(response.data.message);
     }
@@ -170,6 +208,7 @@ function AddRecordModal({
 const mapState = (state: RootState) => {
   return {
     user: state.HomeReducer.user,
+    records: state.HomeReducer.records,
   };
 };
 

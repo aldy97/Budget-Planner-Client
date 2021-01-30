@@ -103,10 +103,10 @@ function RecordList({ user, records, filter, updateRecordsToRedux }: List) {
     setData(getSortData(modifiedRecord));
   };
 
-  // every time records or filter change, regenerate a new recordList accordingly
+  // every time recordList changes, regenerate a new recordList accordingly
   useEffect(() => {
     generateRecords();
-  });
+  }, [recordList]);
 
   const updateAllRecordsToRedux = async (): Promise<void> => {
     const response = await axios.get(`${URL}/api/getRecords/${currUser?._id}`);
@@ -154,7 +154,6 @@ function RecordList({ user, records, filter, updateRecordsToRedux }: List) {
         description: description || "No description",
       },
     };
-    console.log(request);
     const response = await axios.put(`${URL}/api/updateRecord`, request);
 
     if (response.status === 200) {
@@ -175,41 +174,69 @@ function RecordList({ user, records, filter, updateRecordsToRedux }: List) {
         renderItem={item => (
           <List.Item
             key={item._id}
-            actions={[
-              <EditOutlined
-                onClick={() => {
-                  handleEditBtnClick(item);
-                }}
-                style={{ color: COLORS.THEMEBLUE, cursor: "pointer" }}
-                key="edit-item"
-              ></EditOutlined>,
-              <Button
-                disabled={selected._id !== item._id}
-                type="primary"
-                key="confirm-edit"
-                size="small"
-                onClick={handleConfirmEditBtnClick}
-              >
-                Confirm Edit
-              </Button>,
-              <Popconfirm
-                key="delete-item"
-                placement="topLeft"
-                title="Are you sure you want to delete this record?"
-                onConfirm={() => {
-                  onDeleteConfirm(delID);
-                }}
-                okText="Yes"
-                cancelText="No"
-              >
-                <DeleteOutlined
-                  onClick={() => {
-                    setDelID(item._id);
-                  }}
-                  style={{ color: "#f5222d", cursor: "pointer" }}
-                ></DeleteOutlined>
-              </Popconfirm>,
-            ]}
+            actions={
+              selected._id === item._id
+                ? [
+                    <EditOutlined
+                      onClick={() => {
+                        handleEditBtnClick(item);
+                      }}
+                      style={{ color: COLORS.THEMEBLUE, cursor: "pointer" }}
+                      key="edit-item"
+                    ></EditOutlined>,
+                    <Popconfirm
+                      key="delete-item"
+                      placement="topLeft"
+                      title="Are you sure you want to delete this record?"
+                      onConfirm={() => {
+                        onDeleteConfirm(delID);
+                      }}
+                      okText="Yes"
+                      cancelText="No"
+                    >
+                      <DeleteOutlined
+                        onClick={() => {
+                          setDelID(item._id);
+                        }}
+                        style={{ color: "#f5222d", cursor: "pointer" }}
+                      ></DeleteOutlined>
+                    </Popconfirm>,
+                    <Button
+                      type="primary"
+                      key="confirm-edit"
+                      size="small"
+                      onClick={handleConfirmEditBtnClick}
+                    >
+                      Confirm Edit
+                    </Button>,
+                  ]
+                : [
+                    <EditOutlined
+                      onClick={() => {
+                        handleEditBtnClick(item);
+                      }}
+                      style={{ color: COLORS.THEMEBLUE, cursor: "pointer" }}
+                      key="edit-item"
+                    ></EditOutlined>,
+                    <Popconfirm
+                      key="delete-item"
+                      placement="topLeft"
+                      title="Are you sure you want to delete this record?"
+                      onConfirm={() => {
+                        onDeleteConfirm(delID);
+                      }}
+                      okText="Yes"
+                      cancelText="No"
+                    >
+                      <DeleteOutlined
+                        onClick={() => {
+                          setDelID(item._id);
+                        }}
+                        style={{ color: "#f5222d", cursor: "pointer" }}
+                      ></DeleteOutlined>
+                    </Popconfirm>,
+                  ]
+            }
           >
             <ListItemMeta
               selected={selected}
