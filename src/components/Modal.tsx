@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Record } from "../components/Overview/Content";
 import ExpenseSelector from "./ExpenseSelector";
 import IncomeSelector from "./IncomeSelector";
@@ -81,10 +81,6 @@ function AddRecordModal({
     }
   };
 
-  useEffect(() => {
-    getRecords();
-  });
-
   const onOk = async (): Promise<void> => {
     if (!category) {
       message.error("Category is not selected");
@@ -126,6 +122,7 @@ function AddRecordModal({
     setVisible(false);
     if (response.status === 201) {
       message.success(response.data.message);
+      getRecords();
       type === "expense" ? showNotification() : null;
     } else {
       message.error(response.data.message);

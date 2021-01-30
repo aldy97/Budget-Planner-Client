@@ -17,7 +17,7 @@ const StyledBox = styled.div<Box>`
 
 interface Box {
   type?: "expense" | "income";
-  amount?: number;
+  amount?: string;
 }
 
 function SummaryBox({ type, amount }: Box): JSX.Element {
