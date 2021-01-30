@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@antv/g2plot": "^2.3.10",
     "antd": "^4.8.2",
     "axios": "^0.21.0",
     "cors": "^2.8.5",

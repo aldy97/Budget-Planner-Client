@@ -29,7 +29,7 @@ function AddRecordModal({
   const { TextArea } = Input;
 
   const [title, setTitle] = useState("");
-  const [recordDate, setRecordDate] = useState(moment().format("LLL"));
+  const [recordDate, setRecordDate] = useState("");
   const [type, setType] = useState<"expense" | "income">("expense");
   const [category, setCategory] = useState("");
   const [amount, setAmount] = useState("");
@@ -52,7 +52,7 @@ function AddRecordModal({
     }
 
     if (!recordDate) {
-      message.error("Record date is not selected");
+      message.error("Record date is not determined");
       return;
     }
 
@@ -75,6 +75,7 @@ function AddRecordModal({
       amount,
       description: description || "No description",
     };
+    console.log(request);
 
     const response = await axios.post(`${URL}/api/createRecord`, request);
     console.log(response);

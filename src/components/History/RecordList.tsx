@@ -66,6 +66,8 @@ function RecordList({ user, records, filter, updateRecordsToRedux }: List) {
       const date2 = moment(b.recordDate);
       if (date1.isBefore(date2)) {
         return 1;
+      } else if (moment(a.updatedOn).isBefore(moment(b.updatedOn))) {
+        return 1;
       } else {
         return -1;
       }
@@ -104,7 +106,7 @@ function RecordList({ user, records, filter, updateRecordsToRedux }: List) {
   // every time records or filter change, regenerate a new recordList accordingly
   useEffect(() => {
     generateRecords();
-  }, [filter, records]);
+  });
 
   const updateAllRecordsToRedux = async (): Promise<void> => {
     const response = await axios.get(`${URL}/api/getRecords/${currUser?._id}`);
@@ -152,7 +154,8 @@ function RecordList({ user, records, filter, updateRecordsToRedux }: List) {
         description: description || "No description",
       },
     };
-    const response = await axios.put("/api/updateRecord", request);
+    console.log(request);
+    const response = await axios.put(`${URL}/api/updateRecord`, request);
 
     if (response.status === 200) {
       message.success(response.data.message);
