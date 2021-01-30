@@ -12,6 +12,7 @@ import {
   notification,
   Button,
 } from "antd";
+import { NotificationOutlined } from "@ant-design/icons";
 import { User } from "../reducers/HomeReducer";
 import { Moment } from "moment";
 import axios from "axios";
@@ -71,8 +72,9 @@ function AddRecordModal({
         </Button>
       );
       notification.open({
-        message: "Budget threshold notification",
-        description: `You have spent over ${percentage}% of your monthly budget ${currUser.budget}`,
+        message: <strong>Budget threshold notification</strong>,
+        description: `You have spent ${percentage}% of your monthly budget: $${currUser.budget}`,
+        icon: <NotificationOutlined style={{ color: "#108ee9" }} />,
         btn,
         key,
       });
@@ -119,7 +121,7 @@ function AddRecordModal({
     setVisible(false);
     if (response.status === 201) {
       message.success(response.data.message);
-      showNotification();
+      type === "expense" ? showNotification() : null;
     } else {
       message.error(response.data.message);
     }

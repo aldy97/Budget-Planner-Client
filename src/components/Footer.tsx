@@ -30,7 +30,7 @@ function Footer(): JSX.Element {
         <GithubOutlined
           className="icon"
           onClick={() => {
-            window.open("https://github.com/aldy97/Budget-Planner");
+            window.open("https://github.com/aldy97");
           }}
         />
         <BugOutlined

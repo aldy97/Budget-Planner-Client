@@ -1,4 +1,5 @@
 import React from "react";
+import { useHistory } from "react-router-dom";
 import { UserOutlined, LogoutOutlined } from "@ant-design/icons";
 import { Menu, Dropdown, Button } from "antd";
 
@@ -7,8 +8,10 @@ interface DropDown {
 }
 
 function UserDropDown({ name }: DropDown): JSX.Element {
+  const history = useHistory();
+
   const handleLogOutBtnClcik = () => {
-    window.location.href = "/";
+    history.push("/");
   };
 
   const menu = (
