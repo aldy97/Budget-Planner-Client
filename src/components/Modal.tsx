@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Record } from "../components/Overview/Content";
 import ExpenseSelector from "./ExpenseSelector";
 import IncomeSelector from "./IncomeSelector";
@@ -80,6 +80,11 @@ function AddRecordModal({
       });
     }
   };
+
+  // adding `,[]` makes sure that it only excute getRecords once when it is mounted
+  useEffect(() => {
+    getRecords();
+  }, []);
 
   const onOk = async (): Promise<void> => {
     if (!category) {

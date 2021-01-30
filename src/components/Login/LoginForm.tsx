@@ -28,15 +28,13 @@ function LoginForm({ updateUserInfo }: LoginFormProps) {
   const handleLoginBtnClick = async () => {
     const request = { email, password };
     const response = await axios.post(`${URL}/api/login`, request);
-    console.log(response);
-    const messageText = response.data.message;
     if (response.status === 201) {
       const user: User = response.data.user;
       message.success("Login Success!");
       updateUserInfo ? updateUserInfo(user) : null;
       setIsLogin(true);
-    } else {
-      message.error(messageText);
+    } else if (response.status === 400) {
+      message.error("Email and password does not match");
     }
   };
 
