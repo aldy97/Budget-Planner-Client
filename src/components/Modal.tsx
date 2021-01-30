@@ -14,7 +14,7 @@ import {
 } from "antd";
 import { NotificationOutlined } from "@ant-design/icons";
 import { User } from "../reducers/HomeReducer";
-import { Moment } from "moment";
+import moment, { Moment } from "moment";
 import axios from "axios";
 import { URL } from "../utils/constants";
 import { connect } from "react-redux";
@@ -93,6 +93,11 @@ function AddRecordModal({
 
     if (!recordDate) {
       message.error("Record date is not determined");
+      return;
+    }
+
+    if (moment(recordDate).isAfter(moment())) {
+      message.error("The date can not be future date");
       return;
     }
 
