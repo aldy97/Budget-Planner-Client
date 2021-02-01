@@ -11,18 +11,11 @@ interface ListProps {
 }
 
 function RecordList({ type, records, maxLength }: ListProps): JSX.Element {
-  const currMonth = moment().month() + 1;
-  const currYear = moment().year();
-
-  const matchYearAndMonth = (date: string): boolean => {
-    const [year, month] = date.split("-");
-    return parseInt(year) === currYear && parseInt(month) === currMonth;
-  };
-
   // 根据记录类型，展示当年当月指定数量的记录
   const data = records
-    .filter(record => record.type === type)
-    .filter(record => matchYearAndMonth(record.recordDate))
+    .filter(
+      record => record.type === type && moment().isSame(record.recordDate, "month")
+    )
     .sort((a, b) => {
       return moment(a.recordDate).isBefore(moment(b.recordDate)) ? 1 : -1;
     })

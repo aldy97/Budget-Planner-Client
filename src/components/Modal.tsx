@@ -67,7 +67,7 @@ function AddRecordModal({
     const cutLine = (currUser.budget * currUser.threshold) / 100;
 
     if (currUser.threshold && currUser.budget && expense >= cutLine) {
-      const percentage = Math.min((expense * 100) / currUser.budget, 100);
+      const percentage = (expense * 100) / currUser.budget;
       const key = "notify user";
       const btn = (
         <Button type="primary" size="small" onClick={() => notification.close(key)}>

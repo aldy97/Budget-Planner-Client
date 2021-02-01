@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import moment from "moment";
 import styled from "styled-components";
 import SummaryBox from "./SummaryBox";
 import RecordList from "./RecordList";
@@ -46,14 +47,21 @@ function Content({ records }: ContentProps) {
   const getExpenseAndIncome = () => {
     const expense = records
       ? records
-          .filter(record => record.type === "expense")
+          .filter(
+            record =>
+              record.type === "expense" &&
+              moment().isSame(record.recordDate, "month")
+          )
           .map(record => record.amount)
           .reduce((acc, curr) => acc + curr, 0)
       : 0;
 
     const income = records
       ? records
-          .filter(record => record.type === "income")
+          .filter(
+            record =>
+              record.type === "income" && moment().isSame(record.recordDate, "month")
+          )
           .map(record => record.amount)
           .reduce((acc, curr) => acc + curr, 0)
       : 0;
