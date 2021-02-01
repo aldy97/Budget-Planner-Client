@@ -23,7 +23,9 @@ function RecordList({ type, records, maxLength }: ListProps): JSX.Element {
   const data = records
     .filter(record => record.type === type)
     .filter(record => matchYearAndMonth(record.recordDate))
-    .reverse()
+    .sort((a, b) => {
+      return moment(a.recordDate).isBefore(moment(b.recordDate)) ? 1 : -1;
+    })
     .slice(0, maxLength);
 
   return (
