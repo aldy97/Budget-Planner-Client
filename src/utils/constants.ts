@@ -43,4 +43,7 @@ export const IncomeCategories = [
   "Others",
 ];
 
-export const URL = "https://budget-planner-server.herokuapp.com";
+export const URL = {
+  production: "https://budget-planner-server.herokuapp.com",
+  dev: "http://localhost:7001",
+};

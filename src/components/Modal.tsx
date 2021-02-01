@@ -30,6 +30,8 @@ interface ModalProps {
   updateRecordsToRedux?: (records: Record[]) => void;
 }
 
+const BASE_URL = process.env.NODE_ENV === "production" ? URL.production : URL.dev;
+
 function AddRecordModal({
   visible,
   setVisible,
@@ -48,22 +50,23 @@ function AddRecordModal({
   const [description, setDescription] = useState("");
 
   const getRecords = async (): Promise<void> => {
-    const response = await axios.get(`${URL}/api/getRecords/${currUser._id}`);
+    const response = await axios.get(`${BASE_URL}/api/getRecords/${currUser._id}`);
     const records: Record[] = response.data.records;
     updateRecordsToRedux ? updateRecordsToRedux(records) : null;
   };
 
   // determines whether shows nitification after a new record is stored
-  const showNotification = (): void => {
+  const showNotification = (records: Record[]): void => {
     const expense: number = records
-      .filter(record => record.type === "expense")
+      .filter(
+        record =>
+          record.type === "expense" && moment().isSame(record.recordDate, "month")
+      )
       .map(record => record.amount)
       .reduce((acc, curr) => acc + curr, 0);
-    if (
-      expense > (currUser.budget * currUser.threshold) / 100 &&
-      currUser.threshold &&
-      currUser.budget
-    ) {
+    const cutLine = (currUser.budget * currUser.threshold) / 100;
+
+    if (currUser.threshold && currUser.budget && expense >= cutLine) {
       const percentage = Math.min((expense * 100) / currUser.budget, 100);
       const key = "notify user";
       const btn = (
@@ -73,7 +76,9 @@ function AddRecordModal({
       );
       notification.open({
         message: <strong>Budget threshold notification</strong>,
-        description: `You have spent ${percentage}% of your monthly budget: $${currUser.budget}`,
+        description: `You have spent ${percentage.toFixed(
+          2
+        )}% of your monthly budget: $${currUser.budget}`,
         icon: <NotificationOutlined style={{ color: "#108ee9" }} />,
         btn,
         key,
@@ -122,13 +127,15 @@ function AddRecordModal({
       description: description || "No description",
     };
 
-    const response = await axios.post(`${URL}/api/createRecord`, request);
-    console.log(response);
+    const response = await axios.post(`${BASE_URL}/api/createRecord`, request);
     setVisible(false);
     if (response.status === 201) {
-      message.success(response.data.message);
-      getRecords();
-      type === "expense" ? showNotification() : null;
+      const records: Record[] = response.data.records;
+      message.success("Record is added successfully");
+      if (updateRecordsToRedux) {
+        updateRecordsToRedux(records);
+      }
+      type === "expense" ? showNotification(records) : null;
     } else {
       message.error(response.data.message);
     }

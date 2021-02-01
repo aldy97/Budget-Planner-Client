@@ -9,6 +9,8 @@ import { Dispatch } from "redux";
 import { User } from "../../reducers/HomeReducer";
 import { URL } from "../../utils/constants";
 
+const BASE_URL = process.env.NODE_ENV === "production" ? URL.production : URL.dev;
+
 export const StyledForm = styled(Form)`
   width: 360px;
   margin-left: auto;
@@ -27,7 +29,7 @@ function LoginForm({ updateUserInfo }: LoginFormProps) {
 
   const handleLoginBtnClick = async () => {
     const request = { email, password };
-    const response = await axios.post(`${URL}/api/login`, request);
+    const response = await axios.post(`${BASE_URL}/api/login`, request);
     if (response.status === 201) {
       const user: User = response.data.user;
       message.success("Login Success!");

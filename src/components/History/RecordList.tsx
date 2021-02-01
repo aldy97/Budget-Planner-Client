@@ -14,6 +14,8 @@ import moment from "moment";
 import axios from "axios";
 import { URL } from "../../utils/constants";
 
+const BASE_URL = process.env.NODE_ENV === "production" ? URL.production : URL.dev;
+
 interface List {
   user?: User;
   records?: Record[];
@@ -92,7 +94,7 @@ function RecordList({ user, records, filter, updateRecordsToRedux }: List) {
   }, [recordList, filter]);
 
   const updateAllRecordsToRedux = async (): Promise<void> => {
-    const response = await axios.get(`${URL}/api/getRecords/${currUser?._id}`);
+    const response = await axios.get(`${BASE_URL}/api/getRecords/${currUser?._id}`);
     const records: Record[] = response.data.records;
     if (updateRecordsToRedux) {
       updateRecordsToRedux(records);
@@ -101,7 +103,7 @@ function RecordList({ user, records, filter, updateRecordsToRedux }: List) {
 
   const onDeleteConfirm = async (recordID: string): Promise<void> => {
     const request = { data: { recordID } };
-    const response = await axios.delete(`${URL}/api/deleteRecord`, request);
+    const response = await axios.delete(`${BASE_URL}/api/deleteRecord`, request);
     if (response.status === 202) {
       updateAllRecordsToRedux();
       message.success(response.data.message);
@@ -137,7 +139,7 @@ function RecordList({ user, records, filter, updateRecordsToRedux }: List) {
         description: description || "No description",
       },
     };
-    const response = await axios.put(`${URL}/api/updateRecord`, request);
+    const response = await axios.put(`${BASE_URL}/api/updateRecord`, request);
 
     if (response.status === 200) {
       message.success(response.data.message);
