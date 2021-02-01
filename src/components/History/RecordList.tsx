@@ -4,7 +4,6 @@ import ListItemMeta from "./ListItemMeta";
 import { COLORS } from "../../utils/constants";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { Record } from "../Overview/Content";
-import axios from "axios";
 import { List, message, Popconfirm, Button } from "antd";
 import { connect } from "react-redux";
 import { RootState } from "../../reducers/index";
@@ -12,6 +11,7 @@ import { Dispatch } from "redux";
 import { UpdateRecords, UPDATE_RECORDS } from "../../actions/HomeAction";
 import { Filter } from "../../reducers/FilterReducer";
 import moment from "moment";
+import axios from "axios";
 import { URL } from "../../utils/constants";
 
 interface List {
@@ -41,6 +41,7 @@ const dummySelected: Record = {
 };
 
 function RecordList({ user, records, filter, updateRecordsToRedux }: List) {
+  const currFilter = filter as Filter;
   const recordList = records || [];
   const currUser = user ? user : null;
   const [data, setData] = useState<Record[]>([]);
@@ -60,53 +61,35 @@ function RecordList({ user, records, filter, updateRecordsToRedux }: List) {
     setRecordDate(selected.recordDate);
   }, [selected]);
 
+  // sort from latest to earliest
   const getSortData = (records: Record[]): Record[] => {
-    const sortedData = records.sort((a, b) => {
-      const date1 = moment(a.recordDate);
-      const date2 = moment(b.recordDate);
-      if (date1.isBefore(date2)) {
-        return 1;
-      } else if (moment(a.updatedOn).isBefore(moment(b.updatedOn))) {
-        return 1;
-      } else {
-        return -1;
-      }
+    return records.sort((a, b) => {
+      return moment(a.recordDate).isBefore(moment(b.recordDate)) ? 1 : -1;
     });
-
-    return sortedData;
   };
 
   const generateRecords = (): void => {
-    let modifiedRecord: Record[] = [];
-    const enabled = filter?.enabled;
-    const month = filter?.month;
-    const category = filter?.category;
-    if (!enabled || (month === "" && category === "")) {
-      modifiedRecord = recordList;
-    } else {
-      if (month && category && month !== "" && category !== "") {
-        modifiedRecord = recordList.filter(
-          record =>
-            record.category === category && record.recordDate.slice(0, 7) === month
-        );
-      } else if (!month && !category) {
-        modifiedRecord = recordList;
-      } else if (month && month !== "") {
-        modifiedRecord = recordList.filter(
-          record => record.recordDate.slice(0, 7) === month
-        );
-      } else {
-        modifiedRecord = recordList.filter(record => record.category === category);
-      }
+    let list: Record[] = [];
+    const { month, enabled, category } = currFilter;
+    // when filter does not need to be activated
+    if (!enabled || (!month && !category)) {
+      list = getSortData(recordList);
+    } else if (month && category) {
+      list = recordList
+        .filter(record => record.recordDate.slice(0, 7) === month)
+        .filter(record => record.category === category);
+    } else if (month) {
+      list = recordList.filter(record => record.recordDate.slice(0, 7) === month);
+    } else if (category) {
+      list = recordList.filter(record => record.category === category);
     }
 
-    setData(getSortData(modifiedRecord));
+    setData(getSortData(list));
   };
 
-  // every time recordList changes, regenerate a new recordList accordingly
   useEffect(() => {
     generateRecords();
-  }, [recordList]);
+  }, [recordList, filter]);
 
   const updateAllRecordsToRedux = async (): Promise<void> => {
     const response = await axios.get(`${URL}/api/getRecords/${currUser?._id}`);
