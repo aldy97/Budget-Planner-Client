@@ -14,6 +14,7 @@ import {
 } from "antd";
 import { NotificationOutlined } from "@ant-design/icons";
 import { User } from "../reducers/HomeReducer";
+import { useHistory } from "react-router-dom";
 import moment, { Moment } from "moment";
 import axios from "axios";
 import { URL } from "../utils/constants";
@@ -48,6 +49,8 @@ function AddRecordModal({
   const [category, setCategory] = useState("");
   const [amount, setAmount] = useState("");
   const [description, setDescription] = useState("");
+
+  const history = useHistory();
 
   const getRecords = async (): Promise<void> => {
     const response = await axios.get(`${BASE_URL}/api/getRecords/${currUser._id}`);
@@ -89,6 +92,12 @@ function AddRecordModal({
   // adding `,[]` makes sure that it only excute getRecords once when it is mounted
   useEffect(() => {
     getRecords();
+  }, []);
+
+  useEffect(() => {
+    if (!currUser._id) {
+      history.push("/");
+    }
   }, []);
 
   const onOk = async (): Promise<void> => {
