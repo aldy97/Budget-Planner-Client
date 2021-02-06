@@ -27,16 +27,27 @@ function LoginForm({ updateUserInfo }: LoginFormProps) {
 
   const [isLogin, setIsLogin] = useState(false);
 
-  const handleLoginBtnClick = async () => {
+  const handleLoginBtnClick = async (): Promise<void> => {
+    if (!email) {
+      message.info("Email is empty");
+      return;
+    }
+    if (!password) {
+      message.info("Password is empty");
+      return;
+    }
+
     const request = { email, password };
-    const response = await axios.post(`${BASE_URL}/api/login`, request);
-    if (response.status === 201) {
-      const user: User = response.data.user;
-      message.success("Login Success!");
-      updateUserInfo ? updateUserInfo(user) : null;
-      setIsLogin(true);
-    } else if (response.status === 400) {
-      message.error("Email and password does not match");
+    try {
+      const response = await axios.post(`${BASE_URL}/api/login`, request);
+      if (response.status === 201) {
+        const user: User = response.data.user;
+        message.success("Login Success!");
+        updateUserInfo ? updateUserInfo(user) : null;
+        setIsLogin(true);
+      }
+    } catch (err) {
+      message.error("Login failed");
     }
   };
 
