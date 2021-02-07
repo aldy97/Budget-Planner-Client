@@ -3,51 +3,74 @@ import ReactEcharts from "echarts-for-react";
 import moment from "moment";
 import { COLORS } from "../../utils/constants";
 import { Record } from "../Overview/Content";
-import { connect } from "react-redux";
-import { RootState } from "../../reducers/index";
+import { Options } from "./Content";
 
 interface LineChartProps {
   type: "expense" | "income";
-  records?: Record[];
+  records: Record[];
+  period: string;
 }
 
-// 折线图：根据记录类型展示本周的消费/收入记录
-function LineChart({ type, records }: LineChartProps): JSX.Element {
-  // 过去七天日期
+//折线图：根据记录类型展示消费/收入记录
+function LineChart({ type, records, period }: LineChartProps): JSX.Element {
   const [days, setDays] = useState<string[]>([]);
+  const [totals, setTotals] = useState<number[]>([]);
 
-  // 过去七天每日的记录总额
-  const [totalsInPastWeek, setTotalInPastWeek] = useState<number[]>([]);
+  //根据传入的记录类型，统计花费/收入
+  const initLineChartData = (): void => {
+    const tempTotals = new Map<string, number>();
+    records = records.filter(record => record.type === type);
+    if (period === Options.LAST_MONTH || period === Options.LAST_WEEK) {
+      const days = period === Options.LAST_MONTH ? 29 : 6;
+      for (let i = days; i >= 0; i--) {
+        const day = moment(Date.now() - i * 24 * 3600 * 1000).format("YYYY-MM-DD");
+        tempTotals.set(day, 0);
+      }
 
-  // 取得包括今天在内的七天日期📅
-  const getDays = (): void => {
-    const last7Days: string[] = [];
-    for (let i = 0; i < 7; i++) {
-      last7Days.push(moment(Date.now() - i * 24 * 3600 * 1000).format("MM-DD"));
-    }
-    setDays(last7Days.reverse());
-  };
+      records = records.filter(
+        record => moment().diff(moment(record.recordDate), "days") <= days
+      );
 
-  // 根据传入的记录类型，统计过去一周每日的花费/收入
-  const getTotalsInPastWeek = (): void => {
-    const tempTotalsInPastWeek: number[] = new Array(7).fill(0);
-    if (records) {
-      const filteredRecords = records.filter(record => record.type === type);
-      for (const record of filteredRecords) {
-        const date = record.recordDate.slice(5, 10);
-        if (days.includes(date)) {
-          tempTotalsInPastWeek[days.indexOf(date)] += record.amount;
+      for (const record of records) {
+        const num =
+          tempTotals.get(moment(record.recordDate).format("YYYY-MM-DD")) || 0;
+        tempTotals.set(
+          moment(record.recordDate).format("YYYY-MM-DD"),
+          num + record.amount
+        );
+      }
+    } else {
+      const numOfDays = moment(period, "YYYY-MM").daysInMonth();
+      for (let i = 1; i <= numOfDays; i++) {
+        if (i < 10) {
+          tempTotals.set(moment(period).format("YYYY-MM") + `-0${i}`, 0);
+        } else {
+          tempTotals.set(moment(period).format("YYYY-MM") + `-${i}`, 0);
         }
       }
+
+      records = records.filter(record =>
+        moment(record.recordDate).isSame(period, "month")
+      );
+
+      for (const record of records) {
+        const num =
+          tempTotals.get(moment(record.recordDate).format("YYYY-MM-DD")) || 0;
+        tempTotals.set(
+          moment(record.recordDate).format("YYYY-MM-DD"),
+          num + record.amount
+        );
+      }
     }
-    setTotalInPastWeek(tempTotalsInPastWeek);
+
+    setDays(Array.from(tempTotals.keys()));
+    setTotals(Array.from(tempTotals.values()));
   };
 
   // 两个函数的顺序不能颠倒
   useEffect(() => {
-    getDays();
-    getTotalsInPastWeek();
-  }, [type, records]);
+    initLineChartData();
+  }, [records, period]);
 
   const expenseOption = {
     xAxis: {
@@ -59,7 +82,7 @@ function LineChart({ type, records }: LineChartProps): JSX.Element {
     },
     series: [
       {
-        data: totalsInPastWeek,
+        data: totals,
         type: "line",
       },
     ],
@@ -93,7 +116,7 @@ function LineChart({ type, records }: LineChartProps): JSX.Element {
     },
     series: [
       {
-        data: totalsInPastWeek,
+        data: totals,
         type: "line",
       },
     ],
@@ -129,10 +152,4 @@ function LineChart({ type, records }: LineChartProps): JSX.Element {
   );
 }
 
-const mapState = (state: RootState) => {
-  return {
-    records: state.HomeReducer.records,
-  };
-};
-
-export default connect(mapState, null)(LineChart);
+export default LineChart;

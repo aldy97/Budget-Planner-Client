@@ -1,8 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { Layout, Dropdown, Button, Menu, Space } from "antd";
 import LineChart from "./LineChart";
 import PieChart from "./PieChart";
+import { Record } from "../Overview/Content";
+import { connect } from "react-redux";
+import { RootState } from "../../reducers/index";
+import moment from "moment";
 
 const DropdownWrapper = styled.div`
   text-align: center;
@@ -27,22 +31,48 @@ const Title = styled.div`
   font-weight: bold;
 `;
 
-enum Options {
-  LAST_WEEK = "Last week",
-  LAST_MONTH = "Last month",
-  LAST_YEAR = "Last year",
+export enum Options {
+  LAST_WEEK = "In the past week",
+  LAST_MONTH = "In the past month",
 }
 
-function Content(): JSX.Element {
+interface ContentProps {
+  records?: Record[];
+}
+
+function Content({ records }: ContentProps): JSX.Element {
   const { Content } = Layout;
   const [period, setPeriod] = useState<string>(Options.LAST_WEEK);
+  const [options, setOptions] = useState<string[]>([]);
+
+  const initOptions = (): void => {
+    let tempOptions: string[] = [];
+    tempOptions = Object.values(Options);
+
+    const dates = records?.map(record =>
+      moment(record.recordDate).format("YYYY-MM")
+    );
+
+    for (const date of dates as string[]) {
+      if (!tempOptions.includes(date)) {
+        tempOptions.push(date);
+      }
+    }
+
+    setOptions(tempOptions);
+  };
+
+  // when records change, options will also change accordingly
+  useEffect(() => {
+    initOptions();
+  }, [records]);
 
   const menu = (
     <Menu>
-      {Object.values(Options).map((option, index) => {
+      {options.map(option => {
         return (
           <Menu.Item
-            key={index}
+            key={option}
             onClick={() => {
               setPeriod(option);
             }}
@@ -62,7 +92,6 @@ function Content(): JSX.Element {
       >
         <DropdownWrapper>
           <Space direction="horizontal">
-            <span>Select Period:</span>
             <Dropdown overlay={menu} placement="bottomCenter">
               <Button>{period}</Button>
             </Dropdown>
@@ -71,22 +100,44 @@ function Content(): JSX.Element {
         <StyledChartsWrapper>
           <LeftSection>
             <Title>Expense Distribution</Title>
-            <PieChart type="expense"></PieChart>
+            <PieChart
+              records={records as Record[]}
+              type="expense"
+              period={period}
+            ></PieChart>
           </LeftSection>
           <RightSection>
             <Title>Income Distribution</Title>
-            <PieChart type="income"></PieChart>
+            <PieChart
+              records={records as Record[]}
+              type="income"
+              period={period}
+            ></PieChart>
           </RightSection>
         </StyledChartsWrapper>
         <div style={{ marginLeft: 120, marginRight: 120 }}>
           <Title>Expense Trend</Title>
-          <LineChart type="expense"></LineChart>
+          <LineChart
+            records={records as Record[]}
+            type="expense"
+            period={period}
+          ></LineChart>
           <Title>Income Trend</Title>
-          <LineChart type="income"></LineChart>
+          <LineChart
+            records={records as Record[]}
+            type="income"
+            period={period}
+          ></LineChart>
         </div>
       </div>
     </Content>
   );
 }
 
-export default Content;
+const mapState = (state: RootState) => {
+  return {
+    records: state.HomeReducer.records,
+  };
+};
+
+export default connect(mapState, null)(Content);
