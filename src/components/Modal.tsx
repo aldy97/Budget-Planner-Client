@@ -43,12 +43,24 @@ function AddRecordModal({
   const currUser = user as User;
   const { TextArea } = Input;
 
-  const [title, setTitle] = useState("");
-  const [recordDate, setRecordDate] = useState("");
+  const [title, setTitle] = useState<string>("");
+  const [recordDate, setRecordDate] = useState<string>(
+    moment().format("YYYY-MM-DD")
+  );
   const [type, setType] = useState<"expense" | "income">("expense");
-  const [category, setCategory] = useState("");
-  const [amount, setAmount] = useState("");
-  const [description, setDescription] = useState("");
+  const [category, setCategory] = useState<string>("");
+  const [amount, setAmount] = useState<string>("");
+  const [description, setDescription] = useState<string>("");
+
+  // only after one record is added successfully
+  const clearFields = (): void => {
+    setTitle("");
+    setRecordDate(moment().format("YYYY-MM-DD"));
+    setType("expense");
+    setCategory("");
+    setAmount("");
+    setDescription("");
+  };
 
   const history = useHistory();
 
@@ -137,7 +149,7 @@ function AddRecordModal({
     };
 
     const response = await axios.post(`${BASE_URL}/api/createRecord`, request);
-    setVisible(false);
+
     if (response.status === 201) {
       const records: Record[] = response.data.records;
       message.success("Record is added successfully");
@@ -145,6 +157,8 @@ function AddRecordModal({
         updateRecordsToRedux(records);
       }
       type === "expense" ? showNotification(records) : null;
+      clearFields();
+      setVisible(false);
     } else {
       message.error(response.data.message);
     }
@@ -166,6 +180,7 @@ function AddRecordModal({
         <div>
           <div>Title:</div>
           <Input
+            value={title}
             onChange={e => {
               setTitle(e.target.value);
             }}
@@ -200,6 +215,7 @@ function AddRecordModal({
         <div>
           <div>Amount:</div>
           <Input
+            value={amount}
             onChange={e => {
               setAmount(e.target.value);
             }}
@@ -211,6 +227,7 @@ function AddRecordModal({
         <div>
           <div>Date:</div>
           <DatePicker
+            value={moment(recordDate)}
             onChange={(value: Moment | null, dateString: string) => {
               setRecordDate(dateString);
             }}
@@ -219,6 +236,7 @@ function AddRecordModal({
         <div>
           <div>Description:</div>
           <TextArea
+            value={description}
             maxLength={50}
             onChange={e => {
               setDescription(e.target.value);
