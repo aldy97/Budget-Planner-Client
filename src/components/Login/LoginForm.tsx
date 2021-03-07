@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { Form, Input, Button, Checkbox, message } from "antd";
 import axios from "axios";
@@ -18,20 +18,33 @@ export const StyledForm = styled(Form)`
 `;
 
 interface LoginFormProps {
-  updateUserInfo?: (user: User) => void;
+  updateUserInfo: (user: User) => void;
 }
 
-function LoginForm({ updateUserInfo }: LoginFormProps) {
+function LoginForm(props: LoginFormProps) {
+  const { updateUserInfo } = props;
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const [isLogin, setIsLogin] = useState(false);
+
+  const initDevAccount = () => {
+    setEmail("fengxiong@gmail.com");
+    setPassword("1234567");
+  };
+
+  useEffect(() => {
+    if (process.env.NODE_ENV === "development") {
+      initDevAccount();
+    }
+  }, []);
 
   const handleLoginBtnClick = async (): Promise<void> => {
     if (!email) {
       message.info("Email is empty");
       return;
     }
+
     if (!password) {
       message.info("Password is empty");
       return;
@@ -43,7 +56,7 @@ function LoginForm({ updateUserInfo }: LoginFormProps) {
       if (response.status === 201) {
         const user: User = response.data.user;
         message.success("Login Success!");
-        updateUserInfo ? updateUserInfo(user) : null;
+        updateUserInfo(user);
         setIsLogin(true);
       }
     } catch (err) {

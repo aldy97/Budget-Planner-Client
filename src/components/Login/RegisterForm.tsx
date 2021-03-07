@@ -44,19 +44,25 @@ function RegisterFrom({ updateUserInfo }: RegisterFormProps): JSX.Element {
 
   const handleRegisterBtnClick = async () => {
     const request = {
-      name: name,
-      password: password,
-      confirmPassword: confirmPassword,
-      email: email,
+      name,
+      password,
+      confirmPassword,
+      email,
     };
-    const response = await axios.post(`${BASE_URL}/api/register`, request);
-    if (response.status === 200) {
-      const user = response.data.user;
-      updateUserInfo(user);
-      message.success("Registration Success!");
-      setIsRegistered(true);
-    } else {
-      message.error(response.data.message);
+
+    try {
+      const response = await axios.post(`${BASE_URL}/api/register`, request);
+      if (response.status === 201) {
+        const user = response.data.user;
+        updateUserInfo(user);
+        message.success("Registration Success!");
+        setIsRegistered(true);
+      } else {
+        message.error(response.data.message);
+      }
+    } catch (e) {
+      console.log(e);
+      message.error("Unexpected error, please try again");
     }
   };
 

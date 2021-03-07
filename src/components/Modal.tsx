@@ -27,8 +27,7 @@ interface ModalProps {
   visible: boolean;
   setVisible: any;
   user?: User;
-  records: Record[];
-  updateRecordsToRedux?: (records: Record[]) => void;
+  updateRecordsToRedux: (records: Record[]) => void;
 }
 
 const BASE_URL = process.env.NODE_ENV === "production" ? URL.production : URL.dev;
@@ -37,7 +36,6 @@ function AddRecordModal({
   visible,
   setVisible,
   user,
-  records,
   updateRecordsToRedux,
 }: ModalProps) {
   const currUser = user as User;
@@ -67,7 +65,7 @@ function AddRecordModal({
   const getRecords = async (): Promise<void> => {
     const response = await axios.get(`${BASE_URL}/api/getRecords/${currUser._id}`);
     const records: Record[] = response.data.records;
-    updateRecordsToRedux ? updateRecordsToRedux(records) : null;
+    updateRecordsToRedux(records);
   };
 
   // determines whether shows nitification after a new record is stored
@@ -79,6 +77,7 @@ function AddRecordModal({
       )
       .map(record => record.amount)
       .reduce((acc, curr) => acc + curr, 0);
+
     const cutLine = (currUser.budget * currUser.threshold) / 100;
 
     if (currUser.threshold && currUser.budget && expense >= cutLine) {
