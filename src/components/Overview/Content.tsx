@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useMemo } from "react";
 import moment from "moment";
 import styled from "styled-components";
 import SummaryBox from "./SummaryBox";
 import RecordList from "./RecordList";
 import { Layout } from "antd";
-import { connect } from "react-redux";
 import { RootState } from "../../reducers/index";
+import { useSelector } from "react-redux";
 
 const SummaryWrapper = styled.div`
   display: flex;
@@ -34,44 +34,31 @@ export interface Record {
   updatedOn: string;
 }
 
-interface ContentProps {
-  records?: Record[];
-}
-
-function Content({ records }: ContentProps) {
+const Content: React.FC = () => {
   const { Content } = Layout;
 
-  const [expenseMonthly, setExpenseMonthly] = useState("");
-  const [incomeMonthly, setIncomeMonthly] = useState("");
+  const { records } = useSelector((s: RootState) => {
+    return { records: s.HomeReducer.records };
+  });
 
-  const getExpenseAndIncome = () => {
-    const expense = records
-      ? records
-          .filter(
-            record =>
-              record.type === "expense" &&
-              moment().isSame(record.recordDate, "month")
-          )
-          .map(record => record.amount)
-          .reduce((acc, curr) => acc + curr, 0)
-      : 0;
+  const expense = useMemo(() => {
+    return records
+      .filter(
+        record =>
+          record.type === "expense" && moment().isSame(record.recordDate, "month")
+      )
+      .map(record => record.amount)
+      .reduce((acc, curr) => acc + curr, 0);
+  }, [records]);
 
-    const income = records
-      ? records
-          .filter(
-            record =>
-              record.type === "income" && moment().isSame(record.recordDate, "month")
-          )
-          .map(record => record.amount)
-          .reduce((acc, curr) => acc + curr, 0)
-      : 0;
-
-    setExpenseMonthly(expense.toFixed(2));
-    setIncomeMonthly(income.toFixed(2));
-  };
-
-  useEffect(() => {
-    getExpenseAndIncome();
+  const income = useMemo(() => {
+    return records
+      .filter(
+        record =>
+          record.type === "income" && moment().isSame(record.recordDate, "month")
+      )
+      .map(record => record.amount)
+      .reduce((acc, curr) => acc + curr, 0);
   }, [records]);
 
   return (
@@ -81,8 +68,8 @@ function Content({ records }: ContentProps) {
         style={{ padding: 24, paddingTop: 5, minHeight: 360, marginTop: 30 }}
       >
         <SummaryWrapper>
-          <SummaryBox type="expense" amount={expenseMonthly}></SummaryBox>
-          <SummaryBox type="income" amount={incomeMonthly}></SummaryBox>
+          <SummaryBox type="expense" amount={expense.toFixed(2)}></SummaryBox>
+          <SummaryBox type="income" amount={income.toFixed(2)}></SummaryBox>
         </SummaryWrapper>
         <ListsWrapper>
           <RecordList
@@ -100,12 +87,6 @@ function Content({ records }: ContentProps) {
       </div>
     </Content>
   );
-}
-
-const mapStateToProps = (state: RootState) => {
-  return {
-    records: state.HomeReducer.records,
-  };
 };
 
-export default connect(mapStateToProps, null)(Content);
+export default Content;

@@ -13,7 +13,6 @@ import {
   Button,
 } from "antd";
 import { NotificationOutlined } from "@ant-design/icons";
-import { User } from "../reducers/HomeReducer";
 import { useHistory } from "react-router-dom";
 import moment, { Moment } from "moment";
 import axios from "axios";
@@ -22,13 +21,13 @@ import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import { RootState } from "../reducers/index";
 import { UpdateRecords, UPDATE_RECORDS } from "../actions/HomeAction";
+import * as HomeState from "../reducers/HomeReducer";
 
-interface ModalProps {
+type ModalProps = {
   visible: boolean;
   setVisible: any;
-  user?: User;
   updateRecordsToRedux: (records: Record[]) => void;
-}
+} & HomeState.HomeReducerProps;
 
 const BASE_URL = process.env.NODE_ENV === "production" ? URL.production : URL.dev;
 
@@ -38,7 +37,6 @@ function AddRecordModal({
   user,
   updateRecordsToRedux,
 }: ModalProps) {
-  const currUser = user as User;
   const { TextArea } = Input;
 
   const [title, setTitle] = useState<string>("");
@@ -63,7 +61,7 @@ function AddRecordModal({
   const history = useHistory();
 
   const getRecords = async (): Promise<void> => {
-    const response = await axios.get(`${BASE_URL}/api/getRecords/${currUser._id}`);
+    const response = await axios.get(`${BASE_URL}/api/getRecords/${user._id}`);
     const records: Record[] = response.data.records;
     updateRecordsToRedux(records);
   };
@@ -78,10 +76,10 @@ function AddRecordModal({
       .map(record => record.amount)
       .reduce((acc, curr) => acc + curr, 0);
 
-    const cutLine = (currUser.budget * currUser.threshold) / 100;
+    const cutLine = (user.budget * user.threshold) / 100;
 
-    if (currUser.threshold && currUser.budget && expense >= cutLine) {
-      const percentage = (expense * 100) / currUser.budget;
+    if (user.threshold && user.budget && expense >= cutLine) {
+      const percentage = (expense * 100) / user.budget;
       const key = "notify user";
       const btn = (
         <Button type="primary" size="small" onClick={() => notification.close(key)}>
@@ -92,7 +90,7 @@ function AddRecordModal({
         message: <strong>Budget threshold notification</strong>,
         description: `You have spent ${percentage.toFixed(
           2
-        )}% of your monthly budget: $${currUser.budget}`,
+        )}% of your monthly budget: $${user.budget}`,
         icon: <NotificationOutlined style={{ color: "#108ee9" }} />,
         btn,
         key,
@@ -106,7 +104,7 @@ function AddRecordModal({
   }, []);
 
   useEffect(() => {
-    if (!currUser._id) {
+    if (!user._id) {
       history.push("/");
     }
   }, []);
@@ -139,7 +137,7 @@ function AddRecordModal({
 
     const request = {
       title: title || "No title",
-      userID: currUser._id,
+      userID: user._id,
       recordDate,
       type,
       category,
@@ -208,8 +206,12 @@ function AddRecordModal({
         </div>
         <div>
           <div>Category:</div>
-          {type === "expense" && <ExpenseSelector setCategory={setCategory} />}
-          {type === "income" && <IncomeSelector setCategory={setCategory} />}
+          {type === "expense" && (
+            <ExpenseSelector value={category} setCategory={setCategory} />
+          )}
+          {type === "income" && (
+            <IncomeSelector value={category} setCategory={setCategory} />
+          )}
         </div>
         <div>
           <div>Amount:</div>

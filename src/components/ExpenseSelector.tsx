@@ -6,12 +6,16 @@ const { Option } = Select;
 
 interface SelectProps {
   setCategory: React.Dispatch<React.SetStateAction<string>>;
+  value: string;
 }
 
-function ExpenseSelector({ setCategory }: SelectProps) {
+const ExpenseSelector: React.FC<SelectProps> = ({
+  setCategory,
+  value,
+}: SelectProps) => {
   return (
     <Select
-      placeholder="Categories"
+      value={value}
       style={{ width: 120 }}
       onChange={(value: string) => {
         setCategory(value);
@@ -26,6 +30,6 @@ function ExpenseSelector({ setCategory }: SelectProps) {
       })}
     </Select>
   );
-}
+};
 
 export default ExpenseSelector;

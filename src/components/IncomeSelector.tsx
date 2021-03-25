@@ -6,19 +6,19 @@ const { Option } = Select;
 
 interface SelectProps {
   setCategory: React.Dispatch<React.SetStateAction<string>>;
+  value: string;
 }
 
-function IncomeSelector({ setCategory }: SelectProps) {
-  const handleCategoryChange = (value: any): void => {
+const IncomeSelector: React.FC<SelectProps> = ({
+  setCategory,
+  value,
+}: SelectProps) => {
+  const handleCategoryChange = (value: string): void => {
     setCategory(value);
   };
 
   return (
-    <Select
-      placeholder="Categories"
-      style={{ width: 120 }}
-      onChange={handleCategoryChange}
-    >
+    <Select value={value} style={{ width: 120 }} onChange={handleCategoryChange}>
       {IncomeCategories.map((category, index) => {
         return (
           <Option key={index} value={category}>
@@ -28,6 +28,6 @@ function IncomeSelector({ setCategory }: SelectProps) {
       })}
     </Select>
   );
-}
+};
 
 export default IncomeSelector;

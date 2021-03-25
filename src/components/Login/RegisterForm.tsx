@@ -61,7 +61,6 @@ function RegisterFrom({ updateUserInfo }: RegisterFormProps): JSX.Element {
         message.error(response.data.message);
       }
     } catch (e) {
-      console.log(e);
       message.error("Unexpected error, please try again");
     }
   };

@@ -31,12 +31,13 @@ function Content({ user, updateUserInfo }: ContenProps) {
       message.error("Budget must be greater than 0");
       return;
     }
+
     const request = {
       _id: user._id,
       updatedFields: { budget: currBudget, threshold: currThreshold },
     };
     const response = await axios.put(`${BASE_URL}/api/updateUserInfo`, request);
-    console.log(response);
+
     if (response.status === 200) {
       const user: User = response.data.user;
       updateUserInfo(user);
