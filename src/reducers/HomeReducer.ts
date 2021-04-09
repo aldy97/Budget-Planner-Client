@@ -10,6 +10,8 @@ export interface User {
   budget: number;
   threshold: number;
   records: Record[];
+  expenseList: string[];
+  incomeList: string[];
   createdOn: string;
   updatedOn: string;
 }
@@ -29,6 +31,8 @@ const initialState: HomeReducerProps = {
     budget: 0,
     threshold: 0,
     records: [],
+    expenseList: [],
+    incomeList: [],
     createdOn: "",
     updatedOn: "",
   },

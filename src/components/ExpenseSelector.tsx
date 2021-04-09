@@ -1,6 +1,8 @@
 import React from "react";
 import { ExpenseCategories } from "../utils/constants";
 import { Select } from "antd";
+import { useSelector } from "react-redux";
+import { RootState } from "../reducers/index";
 
 const { Option } = Select;
 
@@ -13,6 +15,10 @@ const ExpenseSelector: React.FC<SelectProps> = ({
   setCategory,
   value,
 }: SelectProps) => {
+  const { expenseList } = useSelector((s: RootState) => {
+    return { expenseList: s.HomeReducer.user.expenseList };
+  });
+
   return (
     <Select
       value={value}
@@ -21,7 +27,7 @@ const ExpenseSelector: React.FC<SelectProps> = ({
         setCategory(value);
       }}
     >
-      {ExpenseCategories.map((category, index) => {
+      {(expenseList || ExpenseCategories).map((category, index) => {
         return (
           <Option key={index} value={category}>
             {category}
