@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Record } from "../components/Overview/Content";
-import ExpenseSelector from "./ExpenseSelector";
-import IncomeSelector from "./IncomeSelector";
+import CategorySelector from "./CategorySelector";
 import {
   message,
   Modal,
@@ -207,10 +206,18 @@ function AddRecordModal({
         <div>
           <div>Category:</div>
           {type === "expense" && (
-            <ExpenseSelector value={category} setCategory={setCategory} />
+            <CategorySelector
+              value={category}
+              setCategory={setCategory}
+              type="expense"
+            />
           )}
           {type === "income" && (
-            <IncomeSelector value={category} setCategory={setCategory} />
+            <CategorySelector
+              value={category}
+              setCategory={setCategory}
+              type="income"
+            />
           )}
         </div>
         <div>
