@@ -30,12 +30,12 @@ type ModalProps = {
 
 const BASE_URL = process.env.NODE_ENV === "production" ? URL.production : URL.dev;
 
-function AddRecordModal({
+const AddRecordModal: React.FC<ModalProps> = ({
   visible,
   setVisible,
   user,
   updateRecordsToRedux,
-}: ModalProps) {
+}: ModalProps) => {
   const { TextArea } = Input;
 
   const [title, setTitle] = useState<string>("");
@@ -60,8 +60,10 @@ function AddRecordModal({
   const history = useHistory();
 
   const getRecords = async (): Promise<void> => {
-    const response = await axios.get(`${BASE_URL}/api/getRecords/${user._id}`);
-    const records: Record[] = response.data.records;
+    const response = await axios.get<{ records: Record[] }>(
+      `${BASE_URL}/api/getRecords/${user._id}`
+    );
+    const records = response.data.records;
     updateRecordsToRedux(records);
   };
 
@@ -144,10 +146,13 @@ function AddRecordModal({
       description: description || "No description",
     };
 
-    const response = await axios.post(`${BASE_URL}/api/createRecord`, request);
+    const response = await axios.post<{ records: Record[]; message: string }>(
+      `${BASE_URL}/api/createRecord`,
+      request
+    );
 
     if (response.status === 201) {
-      const records: Record[] = response.data.records;
+      const records = response.data.records;
       message.success("Record is added successfully");
       if (updateRecordsToRedux) {
         updateRecordsToRedux(records);
@@ -205,20 +210,7 @@ function AddRecordModal({
         </div>
         <div>
           <div>Category:</div>
-          {type === "expense" && (
-            <CategorySelector
-              value={category}
-              setCategory={setCategory}
-              type="expense"
-            />
-          )}
-          {type === "income" && (
-            <CategorySelector
-              value={category}
-              setCategory={setCategory}
-              type="income"
-            />
-          )}
+          <CategorySelector value={category} setCategory={setCategory} type={type} />
         </div>
         <div>
           <div>Amount:</div>
@@ -254,7 +246,7 @@ function AddRecordModal({
       </Space>
     </Modal>
   );
-}
+};
 
 const mapState = (state: RootState) => {
   return {

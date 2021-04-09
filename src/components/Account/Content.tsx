@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import CategoriesEdittor from "./CategoriesEdittor";
 import { Layout, Input, Space, Button } from "antd";
 import { message } from "antd";
 import axios from "axios";
@@ -83,6 +84,21 @@ function Content({ user, updateUserInfo }: ContenProps) {
           </Button>
         </Space>
       </div>
+
+      <Space>
+        <div
+          className="site-layout-background"
+          style={{ padding: 30, minHeight: 360, marginTop: 30, width: 560 }}
+        >
+          <CategoriesEdittor type="expense"></CategoriesEdittor>
+        </div>
+        <div
+          className="site-layout-background"
+          style={{ padding: 30, minHeight: 360, marginTop: 30, width: 560 }}
+        >
+          <CategoriesEdittor type="income"></CategoriesEdittor>
+        </div>
+      </Space>
     </Content>
   );
 }

@@ -1,5 +1,10 @@
 import { Record } from "../components/Overview/Content";
-import { UPDATE_USER_INFO, UPDATE_RECORDS, HomeAction } from "../actions/HomeAction";
+import {
+  UPDATE_USER_INFO,
+  UPDATE_RECORDS,
+  HomeAction,
+  UPDATE_CATEGORIES_LIST,
+} from "../actions/HomeAction";
 
 export interface User {
   name: string;
@@ -49,6 +54,15 @@ export const HomeReducer = (
     }
     case UPDATE_RECORDS: {
       return { ...state, records: action.records };
+    }
+    case UPDATE_CATEGORIES_LIST: {
+      const newUser = state.user;
+      if (action.recordType === "expense") {
+        newUser.expenseList = action.list;
+      } else {
+        newUser.incomeList = action.list;
+      }
+      return { ...state, user: newUser };
     }
     default:
       return state;

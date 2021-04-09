@@ -3,6 +3,7 @@ import { Record } from "../components/Overview/Content";
 
 export const UPDATE_USER_INFO = "update user information";
 export const UPDATE_RECORDS = "update records";
+export const UPDATE_CATEGORIES_LIST = "update categories list";
 
 export interface UpdateUserInfo {
   type: typeof UPDATE_USER_INFO;
@@ -14,4 +15,10 @@ export interface UpdateRecords {
   records: Record[];
 }
 
-export type HomeAction = UpdateUserInfo | UpdateRecords;
+export interface UpdateCategoriesList {
+  type: typeof UPDATE_CATEGORIES_LIST;
+  list: string[];
+  recordType: "expense" | "income";
+}
+
+export type HomeAction = UpdateUserInfo | UpdateRecords | UpdateCategoriesList;
