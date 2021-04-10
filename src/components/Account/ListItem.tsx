@@ -1,11 +1,5 @@
 import React, { useState } from "react";
-import { List } from "antd";
-import {
-  DeleteOutlined,
-  ArrowUpOutlined,
-  ArrowDownOutlined,
-} from "@ant-design/icons";
-import { COLORS } from "../../utils/constants";
+import { List, Button } from "antd";
 
 type ListItemProps = {
   index: number;
@@ -27,50 +21,64 @@ const ListItem: React.FC<ListItemProps> = (props: ListItemProps) => {
     onArrowDown,
     index,
   } = props;
+
   const [isHovered, setIsHovered] = useState(false);
 
-  const toggle = (): void => {
-    setIsHovered(!isHovered);
-  };
-
   const styles: { [styles: string]: React.CSSProperties } = {
-    iconStyle: {
+    butonStyle: {
       float: "right",
       marginRight: 8,
-      marginTop: 4,
-      color: "red",
-      cursor: "pointer",
     },
   };
 
   return (
-    <List.Item onMouseEnter={toggle} onMouseLeave={toggle}>
+    <List.Item
+      onMouseEnter={() => {
+        setIsHovered(true);
+      }}
+      onMouseLeave={() => {
+        setIsHovered(false);
+      }}
+    >
       {itemName}
       {isHovered && (
         <>
-          <DeleteOutlined
+          <Button
             onClick={() => {
               onDelClick(itemName);
             }}
-            style={{ ...styles.iconStyle, color: "red" }}
-          />
+            type="primary"
+            danger
+            size="small"
+            style={styles.butonStyle}
+          >
+            Delete
+          </Button>
 
           {!isLast && (
-            <ArrowDownOutlined
+            <Button
               onClick={() => {
                 onArrowDown(index);
               }}
-              style={{ ...styles.iconStyle, color: COLORS.THEMEBLUE }}
-            ></ArrowDownOutlined>
+              type="primary"
+              size="small"
+              style={styles.butonStyle}
+            >
+              Move down
+            </Button>
           )}
 
           {!isFirst && (
-            <ArrowUpOutlined
+            <Button
               onClick={() => {
                 onArrowUp(index);
               }}
-              style={{ ...styles.iconStyle, color: COLORS.THEMEBLUE }}
-            ></ArrowUpOutlined>
+              type="primary"
+              size="small"
+              style={styles.butonStyle}
+            >
+              Move up
+            </Button>
           )}
         </>
       )}

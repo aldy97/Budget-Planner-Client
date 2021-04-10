@@ -142,12 +142,16 @@ const CategoriesEdittor: React.FC<EdittorProps> = (props: EdittorProps) => {
       <Space direction="vertical">
         <Space direction="horizontal" style={{ marginTop: 16 }}>
           <Input value={text} onChange={e => setText(e.target.value)}></Input>
-          <Button type="primary" onClick={onAddBtnClick}>
-            Add new category
+          <Button
+            type="primary"
+            onClick={onAddBtnClick}
+            disabled={list.length === MAX_LIST_LENGTH}
+          >
+            {list.length < MAX_LIST_LENGTH ? "Add" : "List reached maximum length"}
           </Button>
         </Space>
         <Button type="primary" onClick={onConfirmClick} disabled={!updated}>
-          Confirm change
+          {updated ? "Confirm change" : "No change detected"}
         </Button>
       </Space>
     </>
