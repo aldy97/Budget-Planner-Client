@@ -227,6 +227,7 @@ const AddRecordModal: React.FC<ModalProps> = ({
         <div>
           <div>Date:</div>
           <DatePicker
+            allowClear={false}
             value={moment(recordDate)}
             onChange={(value: Moment | null, dateString: string) => {
               setRecordDate(dateString);
