@@ -45,7 +45,7 @@ const SideMenu: React.FC = () => {
           <Link to="/home/history">History</Link>
         </Menu.Item>
         <Menu.Item key="4" icon={<UserOutlined />}>
-          <Link to="/home/account"> My Account</Link>
+          <Link to="/home/account">My Account</Link>
         </Menu.Item>
       </Menu>
     </Sider>
