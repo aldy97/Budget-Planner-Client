@@ -100,7 +100,7 @@ function LoginForm(props: LoginFormProps) {
       </Form.Item>
     </StyledForm>
   ) : (
-    <Redirect to="/overview"></Redirect>
+    <Redirect to="/home/overview"></Redirect>
   );
 }
 

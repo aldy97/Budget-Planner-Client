@@ -1,9 +1,6 @@
 import React from "react";
 import Login from "./pages/Login";
-import OverView from "./pages/OverView";
-import Diagram from "./pages/Diagram";
-import History from "./pages/History";
-import Account from "./pages/Account";
+import Home from "./pages/Home";
 import { BackTop } from "antd";
 import { BrowserRouter, Route } from "react-router-dom";
 import { Provider } from "react-redux";
@@ -17,14 +14,7 @@ const App: React.FC = () => {
       <BackTop />
       <BrowserRouter>
         <Route path="/" exact component={() => <Login></Login>}></Route>
-        <Route
-          path="/overview"
-          exact
-          component={() => <OverView></OverView>}
-        ></Route>
-        <Route path="/diagram" exact component={() => <Diagram></Diagram>}></Route>
-        <Route path="/history" exact component={() => <History></History>}></Route>
-        <Route path="/account" exact component={() => <Account></Account>}></Route>
+        <Route path="/home" component={Home}></Route>
       </BrowserRouter>
     </Provider>
   );

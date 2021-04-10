@@ -8,11 +8,7 @@ import {
   ProfileOutlined,
   UserOutlined,
 } from "@ant-design/icons";
-import { UPDATE_RECORD_ID, UpdateRecordID } from "../actions/EditModallAction";
-import { Redirect } from "react-router-dom";
-import { Dispatch } from "redux";
-import { connect } from "react-redux";
-import { CLEAR_RECORD, ClearRecord } from "../actions/ModalAction";
+import { Link } from "react-router-dom";
 
 const StyledWord = styled.div`
   color: white;
@@ -23,109 +19,37 @@ const StyledWord = styled.div`
   font-style: futura;
 `;
 
-interface MenuProps {
-  selected: number;
-  clearRecord: () => void;
-  resetRecordID: () => void;
-}
-
-function SideMenu({ selected, clearRecord, resetRecordID }: MenuProps) {
+const SideMenu: React.FC = () => {
   const { Sider } = Layout;
   const [collapsed, setCollapsed] = useState(false);
-  const [path, setPath] = useState("");
-
-  const UrlParam = window.location.href.split("/")[3];
 
   const toggle = () => {
     setCollapsed(!collapsed);
   };
 
-  const handleMenuItemClick = (route: string) => {
-    if (UrlParam !== route) {
-      setPath(`/${route}`);
-      clearRecord();
-      resetRecordID();
-    }
-  };
-
-  return !path ? (
+  return (
     <Sider collapsible collapsed={collapsed} onCollapse={toggle}>
-      <div
-        className="logo"
-        style={{ cursor: "pointer", marginTop: -8 }}
-        onClick={() => {
-          handleMenuItemClick("overview");
-        }}
-      >
+      <div className="logo" style={{ cursor: "pointer", marginTop: -8 }}>
         <Logo size="medium" showWords={false}></Logo>
         <StyledWord>Budget Planner</StyledWord>
       </div>
-      <Menu
-        theme="dark"
-        defaultSelectedKeys={[`${selected}`]}
-        mode="inline"
-        data-test="menu"
-      >
-        <Menu.Item
-          key="1"
-          icon={<PieChartOutlined />}
-          onClick={() => {
-            handleMenuItemClick("overview");
-          }}
-          data-test="overview"
-        >
-          Overview
+
+      <Menu theme="dark" defaultSelectedKeys={["1"]} mode="inline" data-test="menu">
+        <Menu.Item key="1" icon={<PieChartOutlined />} data-test="overview">
+          <Link to="/home/overview">Overview</Link>
         </Menu.Item>
-        <Menu.Item
-          key="2"
-          icon={<LineChartOutlined />}
-          onClick={() => {
-            handleMenuItemClick("diagram");
-          }}
-        >
-          Diagram
+        <Menu.Item key="2" icon={<LineChartOutlined />}>
+          <Link to="/home/diagram">Diagram</Link>
         </Menu.Item>
-        <Menu.Item
-          key="3"
-          icon={<ProfileOutlined />}
-          onClick={() => {
-            handleMenuItemClick("history");
-          }}
-        >
-          History
+        <Menu.Item key="3" icon={<ProfileOutlined />}>
+          <Link to="/home/history">History</Link>
         </Menu.Item>
-        <Menu.Item
-          key="4"
-          icon={<UserOutlined />}
-          onClick={() => {
-            handleMenuItemClick("account");
-          }}
-        >
-          My Account
+        <Menu.Item key="4" icon={<UserOutlined />}>
+          <Link to="/home/account"> My Account</Link>
         </Menu.Item>
       </Menu>
     </Sider>
-  ) : (
-    <Redirect to={path}></Redirect>
   );
-}
-
-const mapDispatch = (dispatch: Dispatch) => {
-  return {
-    clearRecord() {
-      const action: ClearRecord = {
-        type: CLEAR_RECORD,
-      };
-      dispatch(action);
-    },
-    resetRecordID() {
-      const action: UpdateRecordID = {
-        type: UPDATE_RECORD_ID,
-        recordID: "",
-      };
-      dispatch(action);
-    },
-  };
 };
 
-export default connect(null, mapDispatch)(SideMenu);
+export default SideMenu;
