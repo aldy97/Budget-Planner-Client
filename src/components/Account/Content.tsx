@@ -85,20 +85,32 @@ function Content({ user, updateUserInfo }: ContenProps) {
         </Space>
       </div>
 
-      <Space>
+      <div style={{ display: "flex" }}>
         <div
           className="site-layout-background"
-          style={{ padding: 30, minHeight: 360, marginTop: 30, width: 560 }}
+          style={{
+            flex: 1,
+            padding: 30,
+            minHeight: 360,
+            marginTop: 30,
+            width: 560,
+          }}
         >
           <CategoriesEdittor type="expense"></CategoriesEdittor>
         </div>
         <div
           className="site-layout-background"
-          style={{ padding: 30, minHeight: 360, marginTop: 30, width: 560 }}
+          style={{
+            flex: 1,
+            padding: 30,
+            minHeight: 360,
+            marginTop: 30,
+            width: 560,
+          }}
         >
           <CategoriesEdittor type="income"></CategoriesEdittor>
         </div>
-      </Space>
+      </div>
     </Content>
   );
 }

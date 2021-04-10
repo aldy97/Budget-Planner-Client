@@ -26,8 +26,12 @@ const CategorySelector: React.FC<SelectProps> = ({
 
   const list =
     type === "expense"
-      ? expenseList || ExpenseCategories
-      : incomeList || IncomeCategories;
+      ? expenseList && expenseList.length > 0
+        ? expenseList
+        : ExpenseCategories
+      : incomeList && incomeList.length > 0
+      ? incomeList
+      : IncomeCategories;
 
   return (
     <Select

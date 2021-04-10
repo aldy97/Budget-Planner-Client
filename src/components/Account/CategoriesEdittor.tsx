@@ -32,8 +32,12 @@ const CategoriesEdittor: React.FC<EdittorProps> = (props: EdittorProps) => {
 
   const itemList =
     type === "expense"
-      ? expenseList || ExpenseCategories
-      : incomeList || IncomeCategories;
+      ? expenseList && expenseList.length > 0
+        ? expenseList
+        : ExpenseCategories
+      : incomeList && incomeList.length > 0
+      ? incomeList
+      : IncomeCategories;
 
   const [list, setList] = useState<string[]>(itemList);
   const [text, setText] = useState<string>("");
