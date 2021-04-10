@@ -15,6 +15,8 @@ import { Dispatch } from "redux";
 
 const BASE_URL = process.env.NODE_ENV === "production" ? URL.production : URL.dev;
 
+const MAX_LIST_LENGTH = 20;
+
 type EdittorProps = {
   type: "expense" | "income";
   updateCategoriesList: (list: string[], recordType: "expense" | "income") => void;
@@ -41,6 +43,7 @@ const CategoriesEdittor: React.FC<EdittorProps> = (props: EdittorProps) => {
 
   const [list, setList] = useState<string[]>(itemList);
   const [text, setText] = useState<string>("");
+  const [updated, setUpdated] = useState(false);
 
   const onAddBtnClick = (): void => {
     if (text) {
@@ -48,8 +51,15 @@ const CategoriesEdittor: React.FC<EdittorProps> = (props: EdittorProps) => {
         message.error("Duplicate appears");
         return;
       }
+
+      if (list.length === MAX_LIST_LENGTH) {
+        message.error("Reached max list size");
+        return;
+      }
+
       setList([...list, text]);
       setText("");
+      setUpdated(true);
     } else {
       message.warning("Category can not be empty");
     }
@@ -71,30 +81,60 @@ const CategoriesEdittor: React.FC<EdittorProps> = (props: EdittorProps) => {
       updateCategoriesList(response.data.expenseList, "expense");
       updateCategoriesList(response.data.incomeList, "income");
       message.success("Categories updated!");
+      setUpdated(false);
     } catch (err) {
       message.error("Internal server error");
     }
   };
 
-  const onDelClick = (word: string) => {
+  const onDelClick = (word: string): void => {
     setList(
       list.filter(w => {
         return w !== word;
       })
     );
+    setUpdated(true);
+  };
+
+  const onArrowUp = (index: number): void => {
+    const temp = list[index - 1];
+    const listCopy = [...list];
+    listCopy[index - 1] = list[index];
+    listCopy[index] = temp;
+    setList(listCopy);
+    setUpdated(true);
+  };
+
+  const onArrowDown = (index: number): void => {
+    const temp = list[index + 1];
+    const listCopy = [...list];
+    listCopy[index + 1] = list[index];
+    listCopy[index] = temp;
+    setList(listCopy);
+    setUpdated(true);
   };
 
   return (
     <>
       <Divider orientation="left">
-        {type === "expense" ? "Expense Categories" : "Income Categories"}
+        {type === "expense"
+          ? `Expense Categories (${MAX_LIST_LENGTH - list.length} remaining)`
+          : `Income Categories (${MAX_LIST_LENGTH - list.length} remaining)`}
       </Divider>
       <List
         size="default"
         bordered
         dataSource={list}
-        renderItem={item => (
-          <ListItem onDelClick={onDelClick} itemName={item}>
+        renderItem={(item, index) => (
+          <ListItem
+            index={index}
+            onDelClick={onDelClick}
+            onArrowUp={onArrowUp}
+            onArrowDown={onArrowDown}
+            isFirst={index === 0}
+            isLast={index === list.length - 1}
+            itemName={item}
+          >
             {item}
           </ListItem>
         )}
@@ -103,11 +143,11 @@ const CategoriesEdittor: React.FC<EdittorProps> = (props: EdittorProps) => {
         <Space direction="horizontal" style={{ marginTop: 16 }}>
           <Input value={text} onChange={e => setText(e.target.value)}></Input>
           <Button type="primary" onClick={onAddBtnClick}>
-            Add category
+            Add new category
           </Button>
         </Space>
-        <Button type="primary" onClick={onConfirmClick}>
-          Confirm
+        <Button type="primary" onClick={onConfirmClick} disabled={!updated}>
+          Confirm change
         </Button>
       </Space>
     </>
