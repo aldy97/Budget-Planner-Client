@@ -38,13 +38,13 @@ interface LogoProps {
   size?: "large" | "medium";
 }
 
-function Logo({ showWords, size }: LogoProps): JSX.Element {
+const Logo: React.FC<LogoProps> = ({ showWords, size }: LogoProps) => {
   return (
     <Wrapper size={size}>
       <LogoWrapper size={size}>BP</LogoWrapper>
       {showWords && <Name>Budget Planner</Name>}
     </Wrapper>
   );
-}
+};
 
 export default Logo;
