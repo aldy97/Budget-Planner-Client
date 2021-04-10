@@ -24,7 +24,7 @@ import * as HomeState from "../reducers/HomeReducer";
 
 type ModalProps = {
   visible: boolean;
-  setVisible: any;
+  setVisible: React.Dispatch<React.SetStateAction<boolean>>;
   updateRecordsToRedux: (records: Record[]) => void;
 } & HomeState.HomeReducerProps;
 

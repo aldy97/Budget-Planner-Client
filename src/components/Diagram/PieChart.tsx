@@ -4,18 +4,17 @@ import { Options } from "./Content";
 import moment from "moment";
 import { Record } from "../Overview/Content";
 
-interface TempDataCorrectedProps {
-  value: number | undefined;
-  name: string;
-}
-
 interface PieChartProps {
   type: "expense" | "income";
   records: Record[];
   period: string;
 }
 
-function PieChart({ type, records, period }: PieChartProps) {
+const PieChart: React.FC<PieChartProps> = ({
+  type,
+  records,
+  period,
+}: PieChartProps) => {
   const [categories, setCategories] = useState<string[]>([]);
   const [data, setData] = useState([]);
 
@@ -42,9 +41,9 @@ function PieChart({ type, records, period }: PieChartProps) {
       }
     }
 
-    const map2: any = [];
+    const map2: never[] = [];
     for (const [key, value] of map) {
-      map2.push({ value, name: key });
+      map2.push({ value, name: key } as never);
     }
     setData(map2);
     setCategories(Array.from(map.keys()));
@@ -100,6 +99,6 @@ function PieChart({ type, records, period }: PieChartProps) {
       />
     </div>
   );
-}
+};
 
 export default PieChart;

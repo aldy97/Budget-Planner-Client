@@ -4,7 +4,7 @@ import { Checkbox } from "antd";
 interface TypeInputProps {
   setType: React.Dispatch<React.SetStateAction<string>>;
 }
-function TypeInput({ setType }: TypeInputProps) {
+const TypeInput: React.FC<TypeInputProps> = ({ setType }: TypeInputProps) => {
   const [isExpense, setIsExpense] = useState(true);
 
   const onChange = () => {
@@ -27,6 +27,6 @@ function TypeInput({ setType }: TypeInputProps) {
       </Checkbox>
     </>
   );
-}
+};
 
 export default TypeInput;

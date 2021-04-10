@@ -6,7 +6,6 @@ import { EditOutlined } from "@ant-design/icons";
 import { Layout } from "antd";
 import { connect } from "react-redux";
 import { RootState } from "../reducers/index";
-import { Redirect } from "react-router-dom";
 import { User } from "../reducers/HomeReducer";
 
 interface HeaderProps {
@@ -17,9 +16,8 @@ function Header({ user }: HeaderProps) {
   const currUser = user as User;
   const { Header } = Layout;
   const [visivle, setVisible] = useState(false);
-  const [isLogOut, setIsLogOut] = useState(false);
 
-  return !isLogOut ? (
+  return (
     <Header className="site-layout-background">
       <Button
         onClick={() => {
@@ -38,8 +36,6 @@ function Header({ user }: HeaderProps) {
       </div>
       <Modal visible={visivle} setVisible={setVisible}></Modal>
     </Header>
-  ) : (
-    <Redirect to="/"> </Redirect>
   );
 }
 

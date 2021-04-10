@@ -14,14 +14,14 @@ interface MetaProps {
 }
 
 // History内列表内容解构
-function ListItemMeta({
+const ListItemMeta: React.FC<MetaProps> = ({
   item,
   selected,
   setTitle,
   setDescription,
   setAmount,
   setRecordDate,
-}: MetaProps) {
+}: MetaProps) => {
   return (
     <>
       <List.Item.Meta
@@ -84,6 +84,6 @@ function ListItemMeta({
       </div>
     </>
   );
-}
+};
 
 export default ListItemMeta;

@@ -7,6 +7,7 @@ import { connect } from "react-redux";
 import { RootState } from "../../reducers/index";
 import { Dispatch } from "redux";
 import { Filter } from "../../reducers/FilterReducer";
+import { useSelector } from "react-redux";
 
 const { Option, OptGroup } = Select;
 
@@ -15,10 +16,17 @@ interface FilterProps {
   updateFilter: (filter: Filter) => void;
 }
 
-function RecordsFilter({ filter, updateFilter }: FilterProps) {
+const RecordsFilter: React.FC<FilterProps> = ({ updateFilter }: FilterProps) => {
   const [enabled, setEnabled] = useState(false);
   const [month, setMonth] = useState("");
   const [category, setCategory] = useState("");
+
+  const { expenseList, incomeList } = useSelector((s: RootState) => {
+    return {
+      expenseList: s.HomeReducer.user.expenseList,
+      incomeList: s.HomeReducer.user.incomeList,
+    };
+  });
 
   const handleSwitchChange = () => {
     setEnabled(!enabled);
@@ -26,7 +34,7 @@ function RecordsFilter({ filter, updateFilter }: FilterProps) {
     updateFilter(filter);
   };
 
-  const handleMonthChange = (date: any, dateString: string) => {
+  const handleMonthChange = (value: moment.Moment | null, dateString: string) => {
     setMonth(dateString);
     const filter: Filter = { enabled, month, category };
     updateFilter(filter);
@@ -61,7 +69,10 @@ function RecordsFilter({ filter, updateFilter }: FilterProps) {
         onChange={handleCategoryChange}
       >
         <OptGroup label="Expense">
-          {ExpenseCategories.map((category, index) => {
+          {(expenseList && expenseList.length > 0
+            ? expenseList
+            : ExpenseCategories
+          ).map((category, index) => {
             return (
               <Option key={index} value={category}>
                 {category}
@@ -70,18 +81,20 @@ function RecordsFilter({ filter, updateFilter }: FilterProps) {
           })}
         </OptGroup>
         <OptGroup label="Income">
-          {IncomeCategories.map((category, index) => {
-            return (
-              <Option key={index} value={category}>
-                {category}
-              </Option>
-            );
-          })}
+          {(incomeList && incomeList.length > 0 ? incomeList : IncomeCategories).map(
+            (category, index) => {
+              return (
+                <Option key={index} value={category}>
+                  {category}
+                </Option>
+              );
+            }
+          )}
         </OptGroup>
       </Select>
     </Space>
   );
-}
+};
 
 const mapState = (state: RootState) => {
   return {
