@@ -42,7 +42,7 @@ function RegisterFrom({ updateUserInfo }: RegisterFormProps): JSX.Element {
     setConfirmPassword(e.target.value);
   };
 
-  const handleRegisterBtnClick = async () => {
+  const handleRegisterBtnClick = async (): Promise<void> => {
     const request = {
       name,
       password,
@@ -51,7 +51,10 @@ function RegisterFrom({ updateUserInfo }: RegisterFormProps): JSX.Element {
     };
 
     try {
-      const response = await axios.post(`${BASE_URL}/api/register`, request);
+      const response = await axios.post<{ user: User; message: string }>(
+        `${BASE_URL}/api/register`,
+        request
+      );
       if (response.status === 201) {
         const user = response.data.user;
         updateUserInfo(user);
@@ -102,7 +105,7 @@ function RegisterFrom({ updateUserInfo }: RegisterFormProps): JSX.Element {
       </Form.Item>
     </StyledForm>
   ) : (
-    <Redirect to="/overview"></Redirect>
+    <Redirect to="/home/overview"></Redirect>
   );
 }
 
