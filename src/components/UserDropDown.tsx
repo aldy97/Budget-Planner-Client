@@ -11,7 +11,7 @@ function UserDropDown({ name }: DropDown): JSX.Element {
   const history = useHistory();
 
   const handleLogOutBtnClcik = () => {
-    history.push("/");
+    window.location.href = "/";
   };
 
   const menu = (
