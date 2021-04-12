@@ -4,6 +4,7 @@ import {
   UPDATE_RECORDS,
   HomeAction,
   UPDATE_CATEGORIES_LIST,
+  SET_LOADED,
 } from "../actions/HomeAction";
 
 export interface User {
@@ -24,6 +25,7 @@ export interface User {
 export interface HomeReducerProps {
   user: User;
   records: Record[];
+  loaded: boolean;
 }
 
 const initialState: HomeReducerProps = {
@@ -42,6 +44,7 @@ const initialState: HomeReducerProps = {
     updatedOn: "",
   },
   records: [],
+  loaded: false,
 };
 
 export const HomeReducer = (
@@ -63,6 +66,9 @@ export const HomeReducer = (
         newUser.incomeList = action.list;
       }
       return { ...state, user: newUser };
+    }
+    case SET_LOADED: {
+      return { ...state, loaded: true };
     }
     default:
       return state;

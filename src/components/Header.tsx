@@ -4,16 +4,13 @@ import UserDropDown from "./UserDropDown";
 import { Button } from "antd";
 import { EditOutlined } from "@ant-design/icons";
 import { Layout } from "antd";
-import { connect } from "react-redux";
+import { useSelector } from "react-redux";
 import { RootState } from "../reducers/index";
-import { User } from "../reducers/HomeReducer";
 
-interface HeaderProps {
-  user?: User;
-}
-
-function Header({ user }: HeaderProps) {
-  const currUser = user as User;
+const Header: React.FC = () => {
+  const { user } = useSelector((s: RootState) => {
+    return { user: s.HomeReducer.user };
+  });
   const { Header } = Layout;
   const [visivle, setVisible] = useState(false);
 
@@ -32,17 +29,11 @@ function Header({ user }: HeaderProps) {
         Add Record
       </Button>
       <div style={{ float: "right", marginRight: -33 }}>
-        <UserDropDown name={currUser.name}></UserDropDown>
+        <UserDropDown name={user.name}></UserDropDown>
       </div>
       <Modal visible={visivle} setVisible={setVisible}></Modal>
     </Header>
   );
-}
-
-const mapState = (state: RootState) => {
-  return {
-    user: state.HomeReducer.user,
-  };
 };
 
-export default connect(mapState, null)(Header);
+export default Header;

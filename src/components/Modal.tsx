@@ -19,13 +19,19 @@ import { URL } from "../utils/constants";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import { RootState } from "../reducers/index";
-import { UpdateRecords, UPDATE_RECORDS } from "../actions/HomeAction";
+import {
+  UpdateRecords,
+  UPDATE_RECORDS,
+  SET_LOADED,
+  SetLoaded,
+} from "../actions/HomeAction";
 import * as HomeState from "../reducers/HomeReducer";
 
 type ModalProps = {
   visible: boolean;
   setVisible: React.Dispatch<React.SetStateAction<boolean>>;
   updateRecordsToRedux: (records: Record[]) => void;
+  setLoadedToBeTrue: () => void;
 } & HomeState.HomeReducerProps;
 
 const BASE_URL = process.env.NODE_ENV === "production" ? URL.production : URL.dev;
@@ -35,6 +41,7 @@ const AddRecordModal: React.FC<ModalProps> = ({
   setVisible,
   user,
   updateRecordsToRedux,
+  setLoadedToBeTrue,
 }: ModalProps) => {
   const { TextArea } = Input;
 
@@ -64,7 +71,9 @@ const AddRecordModal: React.FC<ModalProps> = ({
       `${BASE_URL}/api/getRecords/${user._id}`
     );
     const records = response.data.records;
+
     updateRecordsToRedux(records);
+    setLoadedToBeTrue();
   };
 
   // determines whether shows nitification after a new record is stored
@@ -251,8 +260,7 @@ const AddRecordModal: React.FC<ModalProps> = ({
 
 const mapState = (state: RootState) => {
   return {
-    user: state.HomeReducer.user,
-    records: state.HomeReducer.records,
+    ...state.HomeReducer,
   };
 };
 
@@ -263,6 +271,10 @@ const mapDispatch = (dispatch: Dispatch) => {
         type: UPDATE_RECORDS,
         records,
       };
+      dispatch(action);
+    },
+    setLoadedToBeTrue() {
+      const action: SetLoaded = { type: SET_LOADED };
       dispatch(action);
     },
   };
