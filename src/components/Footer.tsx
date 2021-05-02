@@ -41,7 +41,7 @@ function Footer(): JSX.Element {
         />
       </StyledSpace>
       <div>
-        Budget Planner ©2020 Created by{" "}
+        Budget Planner ©2020-2021 Created by{" "}
         <span
           style={NameStyle}
           onClick={() => {
