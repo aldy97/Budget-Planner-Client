@@ -92,6 +92,7 @@ function Content({ records }: ContentProps): JSX.Element {
       >
         <DropdownWrapper>
           <Space direction="horizontal">
+            <div>Choose period:</div>
             <Dropdown overlay={menu} placement="bottomCenter">
               <Button>{period}</Button>
             </Dropdown>
