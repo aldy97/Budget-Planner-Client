@@ -42,7 +42,12 @@ const Logo: React.FC<LogoProps> = ({ showWords, size }: LogoProps) => {
   return (
     <Wrapper size={size}>
       <LogoWrapper size={size}>BP</LogoWrapper>
-      {showWords && <Name>Budget Planner</Name>}
+      {showWords && (
+        <Name>
+          Budget Planner{" "}
+          {process.env.NODE_ENV === "development" && <span>Development</span>}
+        </Name>
+      )}
     </Wrapper>
   );
 };

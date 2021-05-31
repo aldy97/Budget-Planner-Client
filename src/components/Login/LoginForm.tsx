@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { Form, Input, Button, Checkbox, message } from "antd";
 import axios from "axios";
 import { Redirect } from "react-router-dom";
+import { LoadingOutlined } from "@ant-design/icons";
 import { UPDATE_USER_INFO, UpdateUserInfo } from "../../actions/HomeAction";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
@@ -26,13 +27,16 @@ function LoginForm(props: LoginFormProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  const [loginDisabled, setLoginDisabled] = useState<boolean>(false);
+
   const [isLogin, setIsLogin] = useState(false);
 
-  const initDevAccount = () => {
+  const initDevAccount = (): void => {
     setEmail("fengxiong@gmail.com");
     setPassword("1234567");
   };
 
+  // Dev envrionment
   useEffect(() => {
     if (process.env.NODE_ENV === "development") {
       initDevAccount();
@@ -52,7 +56,11 @@ function LoginForm(props: LoginFormProps) {
 
     const request = { email, password };
     try {
-      const response = await axios.post(`${BASE_URL}/api/login`, request);
+      setLoginDisabled(true);
+      const response = await axios.post<{ user: User }>(
+        `${BASE_URL}/api/login`,
+        request
+      );
       if (response.status === 201) {
         const user: User = response.data.user;
         message.success("Login Success!");
@@ -62,6 +70,8 @@ function LoginForm(props: LoginFormProps) {
     } catch (err) {
       message.error("Login failed");
     }
+
+    setLoginDisabled(false);
   };
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -98,8 +108,9 @@ function LoginForm(props: LoginFormProps) {
           type="primary"
           htmlType="submit"
           onClick={handleLoginBtnClick}
+          disabled={loginDisabled}
         >
-          Login
+          {loginDisabled ? <LoadingOutlined /> : `Login`}
         </Button>
       </Form.Item>
     </StyledForm>
