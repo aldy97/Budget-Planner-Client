@@ -1,9 +1,7 @@
 # Budget-Planner-Client💰
 
 [![Netlify Status](https://api.netlify.com/api/v1/badges/d72ff65e-f81c-4125-a2ea-eb4c921c8b41/deploy-status)](https://app.netlify.com/sites/budget-planner-client/deploys)
-[![HitCount](http://hits.dwyl.com/{username}/{project-name}.svg)](http://hits.dwyl.com/aldy97/budget-planner-client)
 [![JavaScript Style Guide: Good Parts](https://img.shields.io/badge/code%20style-goodparts-brightgreen.svg?style=flat)](https://github.com/dwyl/goodparts "JavaScript The Good Parts")
-[![Build Status](https://travis-ci.org/{ORG-or-USERNAME}/{REPO-NAME}.png?branch=master)](https://travis-ci.org/aldy97/Budget-Planner-Client)
 
 ## Budget planner helps you improve your financial status🤑
 
