@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+import { useSelector } from "react-redux";
 import { Layout, Dropdown, Button, Menu, Space } from "antd";
 import LineChart from "./LineChart";
 import PieChart from "./PieChart";
 import { Record } from "../Overview/Content";
-import { connect } from "react-redux";
 import { RootState } from "../../reducers/index";
 import moment from "moment";
 
@@ -14,14 +14,6 @@ const DropdownWrapper = styled.div`
 
 const StyledChartsWrapper = styled.div`
   display: flex;
-`;
-
-const LeftSection = styled.div`
-  flex: 1;
-`;
-
-const RightSection = styled.div`
-  flex: 1;
 `;
 
 const Title = styled.div`
@@ -36,22 +28,21 @@ export enum Options {
   LAST_MONTH = "In the past month",
 }
 
-interface ContentProps {
-  records?: Record[];
-}
-
-function Content({ records }: ContentProps): JSX.Element {
+const Content: React.FC = () => {
   const { Content } = Layout;
   const [period, setPeriod] = useState<string>(Options.LAST_WEEK);
   const [options, setOptions] = useState<string[]>([]);
 
+  const { records } = useSelector((s: RootState) => {
+    return { records: s.HomeReducer.records };
+  });
+
   const initOptions = (): void => {
+    if (!records) return;
     let tempOptions: string[] = [];
     tempOptions = Object.values(Options);
 
-    const dates = records?.map(record =>
-      moment(record.recordDate).format("YYYY-MM")
-    );
+    const dates = records.map(record => moment(record.recordDate).format("YYYY-MM"));
 
     for (const date of dates as string[]) {
       if (!tempOptions.includes(date)) {
@@ -99,22 +90,22 @@ function Content({ records }: ContentProps): JSX.Element {
           </Space>
         </DropdownWrapper>
         <StyledChartsWrapper>
-          <LeftSection>
+          <div style={{ flex: 1 }}>
             <Title>Expense Distribution</Title>
             <PieChart
               records={records as Record[]}
               type="expense"
               period={period}
             ></PieChart>
-          </LeftSection>
-          <RightSection>
+          </div>
+          <div style={{ flex: 1 }}>
             <Title>Income Distribution</Title>
             <PieChart
               records={records as Record[]}
               type="income"
               period={period}
             ></PieChart>
-          </RightSection>
+          </div>
         </StyledChartsWrapper>
         <div style={{ marginLeft: 120, marginRight: 120 }}>
           <Title>Expense Trend</Title>
@@ -133,12 +124,6 @@ function Content({ records }: ContentProps): JSX.Element {
       </div>
     </Content>
   );
-}
-
-const mapState = (state: RootState) => {
-  return {
-    records: state.HomeReducer.records,
-  };
 };
 
-export default connect(mapState, null)(Content);
+export default Content;

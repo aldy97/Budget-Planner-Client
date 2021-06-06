@@ -22,7 +22,7 @@ interface LoginFormProps {
   updateUserInfo: (user: User) => void;
 }
 
-function LoginForm(props: LoginFormProps) {
+const LoginForm: React.FC<LoginFormProps> = (props: LoginFormProps) => {
   const { updateUserInfo } = props;
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -117,7 +117,7 @@ function LoginForm(props: LoginFormProps) {
   ) : (
     <Redirect to="/home/overview"></Redirect>
   );
-}
+};
 
 const mapDispatch = (dispatch: Dispatch) => {
   return {

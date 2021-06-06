@@ -3,7 +3,7 @@ import { Layout } from "antd";
 import Filter from "./Filter";
 import RecordList from "./RecordList";
 
-function Content(): JSX.Element {
+const Content: React.FC = () => {
   const { Content } = Layout;
   return (
     <Content style={{ margin: "4px 16px" }}>
@@ -25,6 +25,6 @@ function Content(): JSX.Element {
       </div>
     </Content>
   );
-}
+};
 
 export default Content;

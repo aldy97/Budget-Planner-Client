@@ -30,7 +30,7 @@ const StyledSpace = styled(Space)`
   }
 `;
 
-function Footer(): JSX.Element {
+const Footer: React.FC = () => {
   return (
     <FooterWrapper>
       <StyledSpace direction="horizontal" size="large">
@@ -61,6 +61,6 @@ function Footer(): JSX.Element {
       </div>
     </FooterWrapper>
   );
-}
+};
 
 export default Footer;

@@ -27,7 +27,7 @@ export interface Record {
   amount: number;
   description: string;
   title: string;
-  type: string;
+  type: "expense" | "income" | "";
   category: string;
   recordDate: string;
   createdOn: string;

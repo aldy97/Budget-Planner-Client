@@ -15,7 +15,9 @@ interface RegisterFormProps {
   updateUserInfo: (user: User) => void;
 }
 
-function RegisterFrom({ updateUserInfo }: RegisterFormProps): JSX.Element {
+const RegisterFrom: React.FC<RegisterFormProps> = ({
+  updateUserInfo,
+}: RegisterFormProps) => {
   const [isRegistered, setIsRegistered] = useState(false);
 
   const [email, setEmail] = useState("");
@@ -107,7 +109,7 @@ function RegisterFrom({ updateUserInfo }: RegisterFormProps): JSX.Element {
   ) : (
     <Redirect to="/home/overview"></Redirect>
   );
-}
+};
 
 const mapDispatch = (dispatch: Dispatch) => {
   return {

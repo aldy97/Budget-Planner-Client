@@ -35,7 +35,7 @@ const Name = styled.div`
 
 interface LogoProps {
   showWords?: boolean;
-  size?: "large" | "medium";
+  size?: "large" | "medium" | undefined;
 }
 
 const Logo: React.FC<LogoProps> = ({ showWords, size }: LogoProps) => {

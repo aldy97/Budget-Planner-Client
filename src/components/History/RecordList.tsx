@@ -42,7 +42,12 @@ const dummySelected: Record = {
   updatedOn: "",
 };
 
-function RecordList({ user, records, filter, updateRecordsToRedux }: List) {
+const RecordList: React.FC<List> = ({
+  user,
+  records,
+  filter,
+  updateRecordsToRedux,
+}: List) => {
   const currFilter = filter as Filter;
   const recordList = records || [];
   const currUser = user ? user : null;
@@ -237,7 +242,7 @@ function RecordList({ user, records, filter, updateRecordsToRedux }: List) {
       />
     </>
   );
-}
+};
 
 const mapState = (state: RootState) => {
   return {
