@@ -40,3 +40,11 @@ export const URL = {
   production: "https://budget-planner-server.herokuapp.com",
   dev: "http://localhost:7001",
 };
+
+export const ErrorMessages = {
+  MISSING_CATEGORY: "Category is not selected",
+  INVALID_DATE: "The date can not be future date",
+  MISSING_DATE: "Record date is not determined",
+  INVALID_AMOUNT: "Amount must be a positive number",
+  MISSING_AMOUNT: "Amount must be provided",
+};
