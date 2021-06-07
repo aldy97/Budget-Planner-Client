@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import CategoriesEdittor from "./CategoriesEdittor";
 import { Layout, Input, Space, Button } from "antd";
 import { message } from "antd";
@@ -13,6 +13,11 @@ import { URL } from "../../utils/constants";
 
 const BASE_URL = process.env.NODE_ENV === "production" ? URL.production : URL.dev;
 
+interface Error {
+  isValid: boolean;
+  errorMessage: string;
+}
+
 interface ContenProps {
   user: User;
   updateUserInfo: (user: User) => void;
@@ -23,13 +28,22 @@ function Content({ user, updateUserInfo }: ContenProps) {
   const [currBudget, setCurrBudget] = useState<number>(user.budget);
   const [currThreshold, setCurrThrehold] = useState<number>(user.threshold);
 
+  const [error, setError] = useState<Error>({ isValid: true, errorMessage: "" });
+
+  useEffect(() => {
+    if (!Number.isNaN(currBudget) && currBudget >= 0) {
+      setError({ isValid: true, errorMessage: "" });
+    }
+  }, [currBudget]);
+
   const handleBudgetChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     setCurrBudget(parseInt(e.target.value));
   };
 
   const handleConfirmBtnClick = async (): Promise<void> => {
-    if (currBudget < 0) {
-      message.error("Budget must be greater than 0");
+    // handles invalid input case:
+    if (Number.isNaN(currBudget) || currBudget < 0) {
+      setError({ isValid: false, errorMessage: "Budget must be a valid number" });
       return;
     }
 
@@ -37,14 +51,22 @@ function Content({ user, updateUserInfo }: ContenProps) {
       _id: user._id,
       updatedFields: { budget: currBudget, threshold: currThreshold },
     };
-    const response = await axios.put(`${BASE_URL}/api/updateUserInfo`, request);
 
-    if (response.status === 200) {
-      const user: User = response.data.user;
-      updateUserInfo(user);
-      message.success("Update success!");
-    } else {
-      message.error(response.data.message);
+    try {
+      const response = await axios.put<{ user: User; message: string }>(
+        `${BASE_URL}/api/updateUserInfo`,
+        request
+      );
+
+      if (response.status === 200) {
+        const user = response.data.user;
+        updateUserInfo(user);
+        message.success("Update success");
+      } else {
+        message.error(response.data.message);
+      }
+    } catch (err) {
+      message.error("Server error, pleae try again later");
     }
   };
 
@@ -71,6 +93,9 @@ function Content({ user, updateUserInfo }: ContenProps) {
               suffix="CAD"
               onChange={handleBudgetChange}
             />
+            {!error.isValid && (
+              <div style={{ color: "red", marginTop: 2 }}>{error.errorMessage}</div>
+            )}
           </div>
           <div>
             <div>Set reminder for my budget:</div>
