@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
-import ReactEcharts from "echarts-for-react";
+import React, { useState, useEffect, useCallback } from "react";
+import { Record } from "../Overview/Content";
 import { Options } from "./Content";
 import moment from "moment";
-import { Record } from "../Overview/Content";
+import { Empty } from "antd";
+import ReactEcharts from "echarts-for-react";
 
 interface PieChartProps {
   type: "expense" | "income";
@@ -18,7 +19,7 @@ const PieChart: React.FC<PieChartProps> = ({
   const [categories, setCategories] = useState<string[]>([]);
   const [data, setData] = useState([]);
 
-  const initData = (): void => {
+  const initData = useCallback(() => {
     const map = new Map<string, number>();
     records = records.filter(record => record.type === type);
 
@@ -45,9 +46,10 @@ const PieChart: React.FC<PieChartProps> = ({
     for (const [key, value] of map) {
       map2.push({ value, name: key } as never);
     }
+
     setData(map2);
     setCategories(Array.from(map.keys()));
-  };
+  }, [records, period]);
 
   useEffect(() => {
     initData();
@@ -88,7 +90,8 @@ const PieChart: React.FC<PieChartProps> = ({
     ],
   };
 
-  return (
+  // render pie chart if record(s), otherwise shows empty state
+  return data.length ? (
     <div>
       <ReactEcharts
         style={{}}
@@ -98,6 +101,11 @@ const PieChart: React.FC<PieChartProps> = ({
         theme={"theme_name"}
       />
     </div>
+  ) : (
+    <Empty
+      style={{ marginTop: 32, marginBottom: 32 }}
+      description={<div>No record found</div>}
+    ></Empty>
   );
 };
 
