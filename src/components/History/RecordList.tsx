@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { User } from "../../reducers/HomeReducer";
 import ListItemMeta from "./ListItemMeta";
 import { COLORS } from "../../utils/constants";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
@@ -9,18 +8,15 @@ import { connect } from "react-redux";
 import { RootState } from "../../reducers/index";
 import { Dispatch } from "redux";
 import { UpdateRecords, UPDATE_RECORDS } from "../../actions/HomeAction";
-import { Filter } from "../../reducers/FilterReducer";
 import moment from "moment";
 import axios from "axios";
 import { URL } from "../../utils/constants";
+import { useSelector } from "react-redux";
 
 const BASE_URL = process.env.NODE_ENV === "production" ? URL.production : URL.dev;
 
 interface List {
-  user?: User;
-  records?: Record[];
-  filter?: Filter;
-  updateRecordsToRedux?: (records: Record[]) => void;
+  updateRecordsToRedux: (records: Record[]) => void;
 }
 
 interface UpdateRequest {
@@ -42,15 +38,13 @@ const dummySelected: Record = {
   updatedOn: "",
 };
 
-const RecordList: React.FC<List> = ({
-  user,
-  records,
-  filter,
-  updateRecordsToRedux,
-}: List) => {
-  const currFilter = filter as Filter;
-  const recordList = records || [];
-  const currUser = user ? user : null;
+const RecordList: React.FC<List> = ({ updateRecordsToRedux }: List) => {
+  const { user, records, filter } = useSelector((state: RootState) => ({
+    user: state.HomeReducer.user,
+    records: state.HomeReducer.records,
+    filter: state.FilterReducer.filter,
+  }));
+
   const [data, setData] = useState<Record[]>([]);
   const [selected, setSelected] = useState<Record>(dummySelected);
 
@@ -71,24 +65,30 @@ const RecordList: React.FC<List> = ({
   // sort from latest to earliest
   const getSortData = (records: Record[]): Record[] => {
     return records.sort((a, b) => {
-      return moment(a.recordDate).isBefore(moment(b.recordDate)) ? 1 : -1;
+      if (moment(a.recordDate).isBefore(b.recordDate)) {
+        return 1;
+      } else if (moment(b.recordDate).isBefore(a.recordDate)) {
+        return -1;
+      } else {
+        return a.amount > b.amount ? 1 : -1;
+      }
     });
   };
 
   const generateRecords = (): void => {
     let list: Record[] = [];
-    const { month, enabled, category } = currFilter;
+    const { month, enabled, category } = filter;
     // when filter does not need to be activated
     if (!enabled || (!month && !category)) {
-      list = getSortData(recordList);
+      list = getSortData(records);
     } else if (month && category) {
-      list = recordList
+      list = records
         .filter(record => record.recordDate.slice(0, 7) === month)
         .filter(record => record.category === category);
     } else if (month) {
-      list = recordList.filter(record => record.recordDate.slice(0, 7) === month);
+      list = records.filter(record => record.recordDate.slice(0, 7) === month);
     } else if (category) {
-      list = recordList.filter(record => record.category === category);
+      list = records.filter(record => record.category === category);
     }
 
     setData(getSortData(list));
@@ -96,14 +96,13 @@ const RecordList: React.FC<List> = ({
 
   useEffect(() => {
     generateRecords();
-  }, [recordList, filter]);
+  }, [records, filter]);
 
   const updateAllRecordsToRedux = async (): Promise<void> => {
-    const response = await axios.get(`${BASE_URL}/api/getRecords/${currUser?._id}`);
+    const response = await axios.get(`${BASE_URL}/api/getRecords/${user._id}`);
     const records: Record[] = response.data.records;
-    if (updateRecordsToRedux) {
-      updateRecordsToRedux(records);
-    }
+
+    updateRecordsToRedux(records);
   };
 
   const onDeleteConfirm = async (recordID: string): Promise<void> => {
@@ -144,7 +143,11 @@ const RecordList: React.FC<List> = ({
         description: description || "No description",
       },
     };
-    const response = await axios.put(`${BASE_URL}/api/updateRecord`, request);
+
+    const response = await axios.put<{ message: string }>(
+      `${BASE_URL}/api/updateRecord`,
+      request
+    );
 
     if (response.status === 200) {
       message.success(response.data.message);
@@ -244,14 +247,6 @@ const RecordList: React.FC<List> = ({
   );
 };
 
-const mapState = (state: RootState) => {
-  return {
-    user: state.HomeReducer.user,
-    records: state.HomeReducer.records,
-    filter: state.FilterReducer.filter,
-  };
-};
-
 const mapDispatch = (dispatch: Dispatch) => {
   return {
     updateRecordsToRedux(records: Record[]) {
@@ -264,4 +259,4 @@ const mapDispatch = (dispatch: Dispatch) => {
   };
 };
 
-export default connect(mapState, mapDispatch)(RecordList);
+export default connect(null, mapDispatch)(RecordList);

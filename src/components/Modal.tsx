@@ -26,6 +26,7 @@ import {
   SetLoaded,
 } from "../actions/HomeAction";
 import * as HomeState from "../reducers/HomeReducer";
+import { ErrorMessages } from "../utils/constants";
 
 type ModalProps = {
   visible: boolean;
@@ -54,6 +55,18 @@ const AddRecordModal: React.FC<ModalProps> = ({
   const [amount, setAmount] = useState<string>("");
   const [description, setDescription] = useState<string>("");
 
+  const [categoryError, setCategoryError] = useState<string>("");
+  const [amountError, setAmountError] = useState<string>("");
+
+  useEffect(() => {
+    if (category) {
+      setCategoryError("");
+    }
+    if (amount && !Number.isNaN(amount)) {
+      setAmountError("");
+    }
+  }, [category, amount]);
+
   // only after one record is added successfully
   const clearFields = (): void => {
     setTitle("");
@@ -62,6 +75,11 @@ const AddRecordModal: React.FC<ModalProps> = ({
     setCategory("");
     setAmount("");
     setDescription("");
+  };
+
+  const clearErrorMessages = (): void => {
+    setCategoryError("");
+    setAmountError("");
   };
 
   const history = useHistory();
@@ -121,29 +139,17 @@ const AddRecordModal: React.FC<ModalProps> = ({
 
   const onOk = async (): Promise<void> => {
     if (!category) {
-      message.error("Category is not selected");
-      return;
-    }
-
-    if (!recordDate) {
-      message.error("Record date is not determined");
-      return;
-    }
-
-    if (moment(recordDate).isAfter(moment())) {
-      message.error("The date can not be future date");
-      return;
+      setCategoryError(ErrorMessages.MISSING_CATEGORY);
     }
 
     if (!amount) {
-      message.error("Amount must be provided");
-      return;
+      setAmountError(ErrorMessages.MISSING_AMOUNT);
+    } else if (parseInt(amount) <= 0) {
+      setAmountError(ErrorMessages.INVALID_AMOUNT);
     }
 
-    if (parseInt(amount) <= 0) {
-      message.error("Amount must be greater than 0");
-      return;
-    }
+    // when there is at least one error
+    if (categoryError || amountError) return;
 
     const request = {
       title: title || "No title",
@@ -172,10 +178,8 @@ const AddRecordModal: React.FC<ModalProps> = ({
     } else {
       message.error(response.data.message);
     }
-  };
 
-  const handleCancel = () => {
-    setVisible(false);
+    clearErrorMessages();
   };
 
   return (
@@ -184,7 +188,9 @@ const AddRecordModal: React.FC<ModalProps> = ({
       visible={visible}
       onOk={onOk}
       confirmLoading={false}
-      onCancel={handleCancel}
+      onCancel={() => {
+        setVisible(false);
+      }}
     >
       <Space direction="vertical">
         <div>
@@ -220,6 +226,7 @@ const AddRecordModal: React.FC<ModalProps> = ({
         <div>
           <div>Category:</div>
           <CategorySelector value={category} setCategory={setCategory} type={type} />
+          <div style={{ marginTop: 2, color: "red" }}>{categoryError}</div>
         </div>
         <div>
           <div>Amount:</div>
@@ -232,6 +239,7 @@ const AddRecordModal: React.FC<ModalProps> = ({
             suffix="CAD"
             type="number"
           ></Input>
+          <div style={{ marginTop: 2, color: "red" }}>{amountError}</div>
         </div>
         <div>
           <div>Date:</div>
