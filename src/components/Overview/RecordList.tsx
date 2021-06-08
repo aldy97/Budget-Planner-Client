@@ -23,7 +23,13 @@ const RecordList: React.FC<ListProps> = ({
       record => record.type === type && moment().isSame(record.recordDate, "month")
     )
     .sort((a, b) => {
-      return moment(a.recordDate).isBefore(moment(b.recordDate)) ? 1 : -1;
+      if (moment(a.recordDate).isBefore(b.recordDate)) {
+        return 1;
+      } else if (moment(b.recordDate).isBefore(a.recordDate)) {
+        return -1;
+      } else {
+        return a.amount > b.amount ? 1 : -1;
+      }
     })
     .slice(0, maxLength);
 
