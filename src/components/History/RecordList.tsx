@@ -38,7 +38,7 @@ const dummySelected: Record = {
   updatedOn: "",
 };
 
-const RecordList: React.FC<List> = ({ updateRecordsToRedux }: List) => {
+const RecordList: React.FC<List> = ({ updateRecordsToRedux }) => {
   const { user, records, filter } = useSelector((state: RootState) => ({
     user: state.HomeReducer.user,
     records: state.HomeReducer.records,
@@ -232,6 +232,7 @@ const RecordList: React.FC<List> = ({ updateRecordsToRedux }: List) => {
             }
           >
             <ListItemMeta
+              user={user}
               selected={selected}
               item={item}
               setTitle={setTitle}

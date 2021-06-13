@@ -23,7 +23,7 @@ interface ContenProps {
   updateUserInfo: (user: User) => void;
 }
 
-function Content({ user, updateUserInfo }: ContenProps) {
+const Content: React.FC<ContenProps> = ({ user, updateUserInfo }: ContenProps) => {
   const { Content } = Layout;
   const [currBudget, setCurrBudget] = useState<number>(user.budget);
   const [currThreshold, setCurrThrehold] = useState<number>(user.threshold);
@@ -138,7 +138,7 @@ function Content({ user, updateUserInfo }: ContenProps) {
       </div>
     </Content>
   );
-}
+};
 
 const mapState = (state: RootState) => {
   return {
