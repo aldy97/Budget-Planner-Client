@@ -53,7 +53,7 @@ const UserDropDown: React.FC<DropDown> = props => {
     <Menu>
       <Menu.Item>
         <a style={{ textAlign: "center" }} onClick={toggleNumberVisibility}>
-          {user.showNumber ? <EyeOutlined /> : <EyeInvisibleOutlined />}
+          {!user.showNumber ? <EyeOutlined /> : <EyeInvisibleOutlined />}
           <span>{user.showNumber ? "Hide number" : "Show number"}</span>
         </a>
       </Menu.Item>
