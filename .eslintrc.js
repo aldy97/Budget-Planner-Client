@@ -25,5 +25,6 @@ module.exports = {
     "react/jsx-uses-vars": "error",
     "no-console": "warn",
     "no-debugger": "warn",
+    "react/prop-types": "off",
   },
 };

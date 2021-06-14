@@ -1,4 +1,6 @@
 import React from "react";
+import { RootState } from "../../reducers";
+import { useSelector } from "react-redux";
 import styled from "styled-components";
 
 const StyledBox = styled.div<Box>`
@@ -16,19 +18,23 @@ const StyledBox = styled.div<Box>`
 `;
 
 interface Box {
-  type?: "expense" | "income";
+  type?: "expense" | "income" | undefined;
   amount?: string;
 }
 
-function SummaryBox({ type, amount }: Box): JSX.Element {
+const SummaryBox: React.FC<Box> = ({ type, amount }: Box) => {
+  const { showNumber } = useSelector((s: RootState) => {
+    return { showNumber: s.HomeReducer.user.showNumber };
+  });
+
   return (
     <StyledBox type={type}>
       <div data-test="type">
         {type === "expense" ? "Monthly Expense" : "Monthly Income"}:
       </div>
-      <div data-test="amount">${amount}</div>
+      <div data-test="amount">${showNumber ? amount : "****"}</div>
     </StyledBox>
   );
-}
+};
 
 export default SummaryBox;

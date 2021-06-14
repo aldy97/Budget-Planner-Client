@@ -12,11 +12,7 @@ interface ListProps {
   maxLength: number;
 }
 
-const RecordList: React.FC<ListProps> = ({
-  type,
-  records,
-  maxLength,
-}: ListProps) => {
+const RecordList: React.FC<ListProps> = ({ type, records, maxLength }) => {
   // 根据记录类型，展示当年当月指定数量的记录
   const data = records
     .filter(
@@ -33,8 +29,11 @@ const RecordList: React.FC<ListProps> = ({
     })
     .slice(0, maxLength);
 
-  const { loaded } = useSelector((s: RootState) => {
-    return { loaded: s.HomeReducer.loaded };
+  const { loaded, showNumber } = useSelector((s: RootState) => {
+    return {
+      loaded: s.HomeReducer.loaded,
+      showNumber: s.HomeReducer.user.showNumber,
+    };
   });
 
   return (
@@ -55,7 +54,9 @@ const RecordList: React.FC<ListProps> = ({
                   </div>
                 }
               />
-              <div style={{ marginRight: 30, color: "#8c8c8c" }}>${item.amount}</div>
+              <div style={{ marginRight: 30, color: "#8c8c8c" }}>
+                ${showNumber ? item.amount : "***"}
+              </div>
             </List.Item>
           )}
         />
@@ -64,7 +65,7 @@ const RecordList: React.FC<ListProps> = ({
           style={{ flex: 1, marginLeft: 30, marginRight: 30 }}
           itemLayout="horizontal"
           dataSource={type === "expense" ? [1, 2, 3, 4] : [1, 2, 3]}
-          renderItem={item => <Skeleton></Skeleton>}
+          renderItem={() => <Skeleton></Skeleton>}
         ></List>
       )}
     </>

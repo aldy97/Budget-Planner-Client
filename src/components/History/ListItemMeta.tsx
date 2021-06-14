@@ -3,8 +3,10 @@ import Tag from "../Overview/CategoryTag";
 import { List, Input, InputNumber, DatePicker } from "antd";
 import { Record } from "../Overview/Content";
 import moment, { Moment } from "moment";
+import { User } from "../../reducers/HomeReducer";
 
 interface MetaProps {
+  user: User;
   item: Record;
   selected: Record;
   setTitle: React.Dispatch<React.SetStateAction<string>>;
@@ -14,14 +16,17 @@ interface MetaProps {
 }
 
 // History内列表内容解构
-const ListItemMeta: React.FC<MetaProps> = ({
-  item,
-  selected,
-  setTitle,
-  setDescription,
-  setAmount,
-  setRecordDate,
-}: MetaProps) => {
+const ListItemMeta: React.FC<MetaProps> = props => {
+  const {
+    user,
+    item,
+    selected,
+    setTitle,
+    setDescription,
+    setAmount,
+    setRecordDate,
+  } = props;
+
   return (
     <>
       <List.Item.Meta
@@ -65,7 +70,7 @@ const ListItemMeta: React.FC<MetaProps> = ({
             defaultValue={item.amount}
           ></InputNumber>
         ) : (
-          <div>${item.amount}</div>
+          <div>${user.showNumber ? item.amount : "***"}</div>
         )}
         <div>
           {selected._id === item._id ? (

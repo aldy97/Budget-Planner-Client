@@ -15,6 +15,7 @@ export interface User {
   password: string;
   budget: number;
   threshold: number;
+  showNumber: boolean;
   records: Record[];
   expenseList: string[];
   incomeList: string[];
@@ -37,6 +38,7 @@ const initialState: HomeReducerProps = {
     password: "",
     budget: 0,
     threshold: 0,
+    showNumber: true,
     records: [],
     expenseList: [],
     incomeList: [],

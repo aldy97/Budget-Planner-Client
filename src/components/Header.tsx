@@ -11,6 +11,7 @@ const Header: React.FC = () => {
   const { user } = useSelector((s: RootState) => {
     return { user: s.HomeReducer.user };
   });
+
   const { Header } = Layout;
   const [visivle, setVisible] = useState(false);
 
@@ -29,7 +30,7 @@ const Header: React.FC = () => {
         Add Record
       </Button>
       <div style={{ float: "right", marginRight: -33 }}>
-        <UserDropDown name={user.name}></UserDropDown>
+        <UserDropDown user={user}></UserDropDown>
       </div>
       <Modal visible={visivle} setVisible={setVisible}></Modal>
     </Header>
