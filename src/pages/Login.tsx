@@ -1,4 +1,4 @@
-import React, { ReactElement, useState } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import Logo from "../components/Login/Logo";
 import LoginRegToggler from "../components/Login/LoginRegToggler";
@@ -13,10 +13,10 @@ const StyledDesc = styled.div`
   color: #8c8c8c;
 `;
 
-const Login = (): ReactElement => {
+const Login: React.FC = () => {
   const [isAtLogin, setIsAtLogin] = useState<boolean>(true);
 
-  const toogle = () => {
+  const toogle = (): void => {
     if (isAtLogin) {
       setIsAtLogin(false);
     } else {

@@ -7,7 +7,10 @@ interface ProgressBarProps {
   changeThreshold: React.Dispatch<React.SetStateAction<number>>;
 }
 
-function ProgressBar({ threshold, changeThreshold }: ProgressBarProps): JSX.Element {
+const ProgressBar: React.FC<ProgressBarProps> = ({
+  threshold,
+  changeThreshold,
+}: ProgressBarProps) => {
   const handlePlusBtnClick = (): void => {
     changeThreshold(threshold + 10 > 100 ? 100 : threshold + 10);
   };
@@ -16,13 +19,13 @@ function ProgressBar({ threshold, changeThreshold }: ProgressBarProps): JSX.Elem
   };
   return (
     <>
-      <Progress percent={threshold} data-test='bar' />
+      <Progress percent={threshold} data-test="bar" />
       <Button.Group>
         <Button onClick={handleMinusBtnClick} icon={<MinusOutlined />} />
         <Button onClick={handlePlusBtnClick} icon={<PlusOutlined />} />
       </Button.Group>
     </>
   );
-}
+};
 
 export default ProgressBar;
