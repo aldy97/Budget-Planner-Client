@@ -1,6 +1,7 @@
 import React from "react";
 import { Layout } from "antd";
 import Filter from "./Filter";
+import Summary from "./Summary";
 import RecordList from "./RecordList";
 
 const Content: React.FC = () => {
@@ -21,6 +22,7 @@ const Content: React.FC = () => {
         <div style={{ textAlign: "center" }}>
           <Filter></Filter>
         </div>
+        <Summary></Summary>
         <RecordList></RecordList>
       </div>
     </Content>
