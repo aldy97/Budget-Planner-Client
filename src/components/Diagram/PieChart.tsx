@@ -104,7 +104,11 @@ const PieChart: React.FC<PieChartProps> = ({
   ) : (
     <Empty
       style={{ marginTop: 32, marginBottom: 32 }}
-      description={<div>No record found</div>}
+      description={
+        <div style={{ color: "#595959", fontSize: 16, fontWeight: "bold" }}>
+          No record found
+        </div>
+      }
     ></Empty>
   );
 };
