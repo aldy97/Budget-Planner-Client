@@ -7,7 +7,7 @@ import { COLORS, ExpenseCategories } from "../../utils/constants";
 
 // renders statistical fact based on history and filter
 const Summary: React.FC = () => {
-  const { records, enable, category, month, expenseList, incomeList } = useSelector(
+  const { records, enable, category, month, expenseList } = useSelector(
     (s: RootState) => {
       return {
         records: s.HomeReducer.records,
@@ -15,7 +15,6 @@ const Summary: React.FC = () => {
         category: s.FilterReducer.filter.category,
         month: s.FilterReducer.filter.month,
         expenseList: s.HomeReducer.user.expenseList,
-        incomeList: s.HomeReducer.user.incomeList,
       };
     }
   );
