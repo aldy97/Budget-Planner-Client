@@ -10,10 +10,11 @@ interface TitleInputProps {
   updateTitleToRedux: (title: string) => void;
 }
 
-function TitleInput({ updateTitleToRedux, title }: TitleInputProps) {
+const TitleInput: React.FC<TitleInputProps> = ({ updateTitleToRedux, title }) => {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     updateTitleToRedux(e.target.value);
   };
+
   return (
     <Input
       defaultValue={title}
@@ -22,7 +23,7 @@ function TitleInput({ updateTitleToRedux, title }: TitleInputProps) {
       data-test="input"
     ></Input>
   );
-}
+};
 
 const mapState = (state: RootState) => {
   return {
