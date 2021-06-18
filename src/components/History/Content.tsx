@@ -3,9 +3,16 @@ import { Layout } from "antd";
 import Filter from "./Filter";
 import Summary from "./Summary";
 import RecordList from "./RecordList";
+import { useSelector } from "react-redux";
+import { RootState } from "../../reducers";
 
 const Content: React.FC = () => {
   const { Content } = Layout;
+
+  const { showNumber } = useSelector((s: RootState) => {
+    return { showNumber: s.HomeReducer.user.showNumber };
+  });
+
   return (
     <Content style={{ margin: "4px 16px" }}>
       <div
@@ -22,7 +29,7 @@ const Content: React.FC = () => {
         <div style={{ textAlign: "center" }}>
           <Filter></Filter>
         </div>
-        <Summary></Summary>
+        {showNumber && <Summary></Summary>}
         <RecordList></RecordList>
       </div>
     </Content>
