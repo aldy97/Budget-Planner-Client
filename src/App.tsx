@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Login from "./pages/Login";
 import Home from "./pages/Home";
 import { BackTop } from "antd";
@@ -9,6 +9,12 @@ import { configureStore } from "./reducers/index";
 export const store = configureStore();
 
 const App: React.FC = () => {
+  useEffect(() => {
+    if (process.env.NODE_ENV === "development") {
+      document.title = "Budget Planner Development";
+    }
+  }, []);
+
   return (
     <Provider store={store}>
       <BackTop />
