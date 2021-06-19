@@ -18,6 +18,11 @@ interface Error {
   errorMessage: string;
 }
 
+interface Request {
+  _id: string;
+  updatedFields: { budget: number; threshold: number };
+}
+
 interface ContenProps {
   user: User;
   updateUserInfo: (user: User) => void;
@@ -25,31 +30,38 @@ interface ContenProps {
 
 const Content: React.FC<ContenProps> = ({ user, updateUserInfo }: ContenProps) => {
   const { Content } = Layout;
-  const [currBudget, setCurrBudget] = useState<number>(user.budget);
+  const [currBudget, setCurrBudget] = useState<string>(user.budget.toString());
   const [currThreshold, setCurrThrehold] = useState<number>(user.threshold);
 
   const [error, setError] = useState<Error>({ isValid: true, errorMessage: "" });
 
+  // number only
+  const reg = /^\d+$/;
+
   useEffect(() => {
-    if (!Number.isNaN(currBudget) && currBudget >= 0) {
+    if (!error.isValid && reg.test(currBudget) && parseInt(currBudget) >= 0) {
       setError({ isValid: true, errorMessage: "" });
     }
   }, [currBudget]);
 
   const handleBudgetChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    setCurrBudget(parseInt(e.target.value));
+    const { value } = e.target;
+    setCurrBudget(value);
   };
 
   const handleConfirmBtnClick = async (): Promise<void> => {
     // handles invalid input case:
-    if (Number.isNaN(currBudget) || currBudget < 0) {
-      setError({ isValid: false, errorMessage: "Budget must be a valid number" });
+    if (!reg.test(currBudget) || parseInt(currBudget) < 0) {
+      setError({
+        isValid: false,
+        errorMessage: "Budget must be a positive whole number",
+      });
       return;
     }
 
-    const request = {
+    const request: Request = {
       _id: user._id,
-      updatedFields: { budget: currBudget, threshold: currThreshold },
+      updatedFields: { budget: parseInt(currBudget), threshold: currThreshold },
     };
 
     try {
