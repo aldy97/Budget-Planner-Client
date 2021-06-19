@@ -6,10 +6,10 @@
 ## Budget planner helps you improve your financial status🤑
 
 - Users can keep track of where their money has gone to and where it came from.
-- Completely free to use! All functions are unlocked for all users.
-- Made a mistake on your record? Do not delete it yet! You can edit it to save your time.
+- Made a mistake on your record? Do not delete it yet! You can edit it in history.
 - Auto-genetrated diagrams could visually help you analyze your financial health.
-- Always set a goal for yourself, including when you are using BP. You can set a monthly expense threshold to give your an alert.
+- Always set a goal for yourself, including when you are using BP. You can set a monthly expense threshold to give yourself an alert.
+- Using BP in public? You can choose to hide numbers by clicking "Hide number" under the user dropdown on the top right corner.
 
 ## Budget planner is involving continuously✨
 
