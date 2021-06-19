@@ -22,7 +22,7 @@ const StyledSpace = styled(Space)`
   }
 `;
 
-function Footer(): JSX.Element {
+const Footer: React.FC = () => {
   const { Footer } = Layout;
   return (
     <Footer style={{ textAlign: "center" }}>
@@ -36,7 +36,7 @@ function Footer(): JSX.Element {
         <BugOutlined
           className="icon"
           onClick={() => {
-            window.open("https://github.com/aldy97/Budget-Planner/issues");
+            window.open("https://github.com/aldy97/Budget-Planner-Client/issues");
           }}
         />
       </StyledSpace>
@@ -54,6 +54,6 @@ function Footer(): JSX.Element {
       </div>
     </Footer>
   );
-}
+};
 
 export default Footer;

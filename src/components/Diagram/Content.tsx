@@ -83,7 +83,9 @@ const Content: React.FC = () => {
       >
         <DropdownWrapper>
           <Space direction="horizontal">
-            <div>Choose period:</div>
+            <div style={{ color: "#595959", fontSize: 16, fontWeight: "bold" }}>
+              Choose period:
+            </div>
             <Dropdown overlay={menu} placement="bottomCenter">
               <Button>{period}</Button>
             </Dropdown>

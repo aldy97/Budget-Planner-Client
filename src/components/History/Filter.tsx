@@ -16,7 +16,7 @@ interface FilterProps {
   updateFilter: (filter: Filter) => void;
 }
 
-const RecordsFilter: React.FC<FilterProps> = ({ updateFilter }: FilterProps) => {
+const RecordsFilter: React.FC<FilterProps> = ({ updateFilter }) => {
   const [enabled, setEnabled] = useState(false);
   const [month, setMonth] = useState("");
   const [category, setCategory] = useState("");
@@ -51,7 +51,9 @@ const RecordsFilter: React.FC<FilterProps> = ({ updateFilter }: FilterProps) => 
 
   return (
     <Space>
-      <span>Apply Filter:</span>
+      <span style={{ color: "#595959", fontSize: 16, fontWeight: "bold" }}>
+        Apply Filter:
+      </span>
       <Switch checked={enabled} onChange={handleSwitchChange}></Switch>
       <DatePicker
         allowClear
@@ -60,7 +62,9 @@ const RecordsFilter: React.FC<FilterProps> = ({ updateFilter }: FilterProps) => 
         onChange={handleMonthChange}
         picker="month"
       />
-      <span>Choose category:</span>
+      <span style={{ color: "#595959", fontSize: 16, fontWeight: "bold" }}>
+        Choose category:
+      </span>
       <Select
         allowClear
         defaultValue={category}

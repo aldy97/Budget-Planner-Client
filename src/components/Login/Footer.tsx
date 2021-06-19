@@ -43,7 +43,7 @@ const Footer: React.FC = () => {
         <BugOutlined
           className="icon"
           onClick={() => {
-            window.open("https://github.com/aldy97/Budget-Planner/issues");
+            window.open("https://github.com/aldy97/Budget-Planner-Client/issues");
           }}
         />
       </StyledSpace>
