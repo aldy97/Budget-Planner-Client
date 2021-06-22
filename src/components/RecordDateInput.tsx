@@ -12,6 +12,7 @@ interface DateInput {
 }
 
 function RecordDateInput({ recordDate, updateRecordDateToRedux }: DateInput) {
+  /* eslint-disable */
   const onChange = (date: any, dateString: string): void => {
     updateRecordDateToRedux(dateString);
   };

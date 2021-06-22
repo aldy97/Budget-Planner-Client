@@ -16,14 +16,18 @@ module.exports = {
     ecmaVersion: 12,
     sourceType: "module",
   },
-  plugins: ["react"],
+  settings: {
+    "react": {
+      "version": "detect",
+    },
+  },
   rules: {
     "@typescript-eslint/adjacent-overload-signatures": "error",
     "@typescript-eslint/explicit-function-return-type": "off",
     "@typescript-eslint/array-type": ["error", { default: "array-simple" }],
     "react/jsx-uses-react": "error",
     "react/jsx-uses-vars": "error",
-    "no-console": "warn",
+    "no-console": "error",
     "no-debugger": "warn",
     "react/prop-types": "off",
   },

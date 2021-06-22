@@ -19,6 +19,7 @@ const rootReducer = combineReducers({
   EditModalReducer,
 });
 
+/* eslint-disable */
 export const configureStore = () => {
   const middlewares: Middleware[] = [];
   const middleWareEnhancer = applyMiddleware(...middlewares);
