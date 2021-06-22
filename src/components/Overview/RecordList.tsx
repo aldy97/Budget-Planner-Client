@@ -72,7 +72,6 @@ const RecordList: React.FC<ListProps> = ({ type, records, maxLength }) => {
       )}
     </>
   );
-  // return <Skeleton active></Skeleton>;
 };
 
 export default RecordList;

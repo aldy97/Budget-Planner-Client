@@ -72,16 +72,8 @@ const Content: React.FC = () => {
           <SummaryBox type="income" amount={income.toFixed(2)}></SummaryBox>
         </SummaryWrapper>
         <ListsWrapper>
-          <RecordList
-            records={records as Record[]}
-            maxLength={5}
-            type="expense"
-          ></RecordList>
-          <RecordList
-            records={records as Record[]}
-            maxLength={5}
-            type="income"
-          ></RecordList>
+          <RecordList records={records} maxLength={5} type="expense"></RecordList>
+          <RecordList records={records} maxLength={5} type="income"></RecordList>
         </ListsWrapper>
         <StyledHint>Only 5 most recent records are shown</StyledHint>
       </div>

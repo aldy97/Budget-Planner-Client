@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { Form, Input, Button, Checkbox, message } from "antd";
+import { Form, Input, Button, message } from "antd";
 import axios from "axios";
 import { Redirect } from "react-router-dom";
 import { LoadingOutlined } from "@ant-design/icons";
@@ -96,10 +96,6 @@ const LoginForm: React.FC<LoginFormProps> = (props: LoginFormProps) => {
           onChange={handlePasswordChange}
           placeholder="Password:"
         />
-      </Form.Item>
-
-      <Form.Item name="remember" valuePropName="checked">
-        <Checkbox>Remember me</Checkbox>
       </Form.Item>
 
       <Form.Item>

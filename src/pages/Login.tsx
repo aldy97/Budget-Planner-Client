@@ -13,6 +13,14 @@ const StyledDesc = styled.div`
   color: #8c8c8c;
 `;
 
+const CenteredBox = styled.div`
+  position: fixed;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+`;
+
 const Login: React.FC = () => {
   const [isAtLogin, setIsAtLogin] = useState<boolean>(true);
 
@@ -26,11 +34,15 @@ const Login: React.FC = () => {
 
   return (
     <>
-      <Logo size="large" showWords></Logo>
-      <StyledDesc>A web app that helps you improve your financial status</StyledDesc>
-      <LoginRegToggler atLogin={isAtLogin} toogle={toogle}></LoginRegToggler>
-      {isAtLogin && <LoginForm></LoginForm>}
-      {!isAtLogin && <RegisterFrom></RegisterFrom>}
+      <CenteredBox>
+        <Logo size="large" showWords></Logo>
+        <StyledDesc>
+          A web app that helps you improve your financial status
+        </StyledDesc>
+        <LoginRegToggler atLogin={isAtLogin} toogle={toogle}></LoginRegToggler>
+        {isAtLogin && <LoginForm></LoginForm>}
+        {!isAtLogin && <RegisterFrom></RegisterFrom>}
+      </CenteredBox>
       <Footer></Footer>
     </>
   );
