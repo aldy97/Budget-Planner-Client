@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import Tag from "./CategoryTag";
 import { Record } from "./Content";
 import { List, Skeleton } from "antd";
@@ -14,20 +14,22 @@ interface ListProps {
 
 const RecordList: React.FC<ListProps> = ({ type, records, maxLength }) => {
   // 根据记录类型，展示当年当月指定数量的记录
-  const data = records
-    .filter(
-      record => record.type === type && moment().isSame(record.recordDate, "month")
-    )
-    .sort((a, b) => {
-      if (moment(a.recordDate).isBefore(b.recordDate)) {
-        return 1;
-      } else if (moment(b.recordDate).isBefore(a.recordDate)) {
-        return -1;
-      } else {
-        return a.amount > b.amount ? 1 : -1;
-      }
-    })
-    .slice(0, maxLength);
+  const data = useMemo(() => {
+    return records
+      .filter(
+        record => record.type === type && moment().isSame(record.recordDate, "month")
+      )
+      .sort((a, b) => {
+        if (moment(a.recordDate).isBefore(b.recordDate)) {
+          return 1;
+        } else if (moment(b.recordDate).isBefore(a.recordDate)) {
+          return -1;
+        } else {
+          return a.amount > b.amount ? 1 : -1;
+        }
+      })
+      .slice(0, maxLength);
+  }, [maxLength, records]);
 
   const { loaded, showNumber } = useSelector((s: RootState) => {
     return {
