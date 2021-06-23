@@ -11,10 +11,17 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { Switch, Route } from "react-router-dom";
 
+import { useSelector } from "react-redux";
+import { RootState } from "../reducers";
+
 const Home: React.FC = () => {
+  const { hideSideMenu } = useSelector((s: RootState) => {
+    return { hideSideMenu: s.HomeReducer.user.hideSideMenu };
+  });
+
   return (
     <Layout style={{ minHeight: "100vh" }}>
-      <SideMenu></SideMenu>
+      {!hideSideMenu && <SideMenu></SideMenu>}
       <Layout className="site-layout">
         <Header></Header>
         <Switch>

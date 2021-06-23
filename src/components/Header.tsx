@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Modal from "./Modal";
+import HeaderMenu from "./HeaderMenu";
 import UserDropDown from "./UserDropDown";
 import { Button } from "antd";
 import { EditOutlined } from "@ant-design/icons";
@@ -25,10 +26,11 @@ const Header: React.FC = () => {
         shape="round"
         icon={<EditOutlined />}
         size="large"
-        style={{ marginLeft: -33 }}
+        style={{ marginLeft: -33, marginRight: 16 }}
       >
         Add Record
       </Button>
+      {user.hideSideMenu && <HeaderMenu />}
       <div style={{ float: "right", marginRight: -33 }}>
         <UserDropDown user={user}></UserDropDown>
       </div>

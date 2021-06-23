@@ -4,6 +4,8 @@ import {
   LogoutOutlined,
   EyeOutlined,
   EyeInvisibleOutlined,
+  MenuFoldOutlined,
+  MenuUnfoldOutlined,
 } from "@ant-design/icons";
 import { Menu, Dropdown, Button, message } from "antd";
 import axios from "axios";
@@ -45,6 +47,25 @@ const UserDropDown: React.FC<DropDown> = props => {
     }
   };
 
+  const toggleSideMenuVisible = async (): Promise<void> => {
+    const request = {
+      _id: user._id,
+      updatedFields: { hideSideMenu: !user.hideSideMenu },
+    };
+
+    try {
+      const response = await axios.put<{ user: User; message: string }>(
+        `${BASE_URL}/api/updateUserInfo`,
+        request
+      );
+
+      const { user } = response.data;
+      updateUserInfo(user);
+    } catch (err) {
+      message.error("Server error, please try again later");
+    }
+  };
+
   const handleLogOutBtnClcik = (): void => {
     window.location.href = "/";
   };
@@ -54,7 +75,14 @@ const UserDropDown: React.FC<DropDown> = props => {
       <Menu.Item>
         <a style={{ textAlign: "center" }} onClick={toggleNumberVisibility}>
           {!user.showNumber ? <EyeOutlined /> : <EyeInvisibleOutlined />}
-          <span>{user.showNumber ? "Hide number" : "Show number"}</span>
+          <span>{user.showNumber ? "Hide Number" : "Show Number"}</span>
+        </a>
+      </Menu.Item>
+
+      <Menu.Item>
+        <a style={{ textAlign: "center" }} onClick={toggleSideMenuVisible}>
+          {!user.hideSideMenu ? <MenuFoldOutlined /> : <MenuUnfoldOutlined />}
+          <span>{user.hideSideMenu ? "Show SideMenu" : "Hide SideMenu"}</span>
         </a>
       </Menu.Item>
 
