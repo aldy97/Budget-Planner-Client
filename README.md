@@ -10,6 +10,7 @@
 - Auto-genetrated diagrams could visually help you analyze your financial health.
 - Always set a goal for yourself, including when you are using BP. You can set a monthly expense threshold to give yourself an alert.
 - Using BP in public? You can choose to hide numbers by clicking "Hide number" under the user dropdown on the top right corner.
+- You can freely choose how your navigation is displayed, side menu or header menu.
 
 ## Budget planner is involving continuously✨
 
