@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
-import { Menu, Dropdown, Button, Space } from "antd";
-import { MenuUnfoldOutlined, MenuFoldOutlined } from "@ant-design/icons";
+import { Menu, Dropdown, Button } from "antd";
+import { MenuFoldOutlined } from "@ant-design/icons";
 
 const menu = (
   <Menu>
@@ -20,7 +20,7 @@ const menu = (
   </Menu>
 );
 
-const HeaderMenu: React.FC = props => {
+const HeaderMenu: React.FC = () => {
   return (
     <Dropdown overlay={menu} placement="bottomCenter">
       <Button>
