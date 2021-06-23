@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Logo from "./Login/Logo";
 import styled from "styled-components";
 import { Menu, Layout } from "antd";
@@ -23,6 +23,21 @@ const SideMenu: React.FC = () => {
   const { Sider } = Layout;
   const [collapsed, setCollapsed] = useState(false);
 
+  const [index, setIndex] = useState("1");
+
+  useEffect(() => {
+    const location = window.location.href.split("/")[4];
+    if (location === "overview") {
+      setIndex("1");
+    } else if (location === "diagram") {
+      setIndex("2");
+    } else if (location === "history") {
+      setIndex("3");
+    } else {
+      setIndex("4");
+    }
+  }, [window.location.href]);
+
   const toggle = () => {
     setCollapsed(!collapsed);
   };
@@ -34,7 +49,7 @@ const SideMenu: React.FC = () => {
         <StyledWord>Budget Planner</StyledWord>
       </div>
 
-      <Menu theme="dark" defaultSelectedKeys={["1"]} mode="inline" data-test="menu">
+      <Menu theme="dark" selectedKeys={[index]} mode="inline" data-test="menu">
         <Menu.Item key="1" icon={<PieChartOutlined />} data-test="overview">
           <Link to="/home/overview">Overview</Link>
         </Menu.Item>
