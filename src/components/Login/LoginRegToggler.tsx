@@ -42,13 +42,13 @@ const StyledItem = styled.span<ItemProps>`
 `;
 
 const LoginRegToggler: React.FC<Toggler> = ({ atLogin, toogle }: Toggler) => {
-  const handleLoginClick = () => {
+  const handleLoginClick = (): void => {
     if (!atLogin) {
       toogle();
     }
   };
 
-  const handleRegisterClick = () => {
+  const handleRegisterClick = (): void => {
     if (atLogin) {
       toogle();
     }

@@ -24,12 +24,12 @@ interface LoginFormProps {
 
 const LoginForm: React.FC<LoginFormProps> = (props: LoginFormProps) => {
   const { updateUserInfo } = props;
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
 
   const [loginDisabled, setLoginDisabled] = useState<boolean>(false);
 
-  const [isLogin, setIsLogin] = useState(false);
+  const [isLogin, setIsLogin] = useState<boolean>(false);
 
   const initDevAccount = (): void => {
     setEmail("fengxiong@gmail.com");
