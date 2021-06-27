@@ -12,7 +12,6 @@ import { useSelector } from "react-redux";
 const { Option, OptGroup } = Select;
 
 interface FilterProps {
-  filter: Filter;
   updateFilter: (filter: Filter) => void;
 }
 
@@ -100,12 +99,6 @@ const RecordsFilter: React.FC<FilterProps> = ({ updateFilter }) => {
   );
 };
 
-const mapState = (state: RootState) => {
-  return {
-    filter: state.FilterReducer.filter,
-  };
-};
-
 const mapDispatch = (dispatch: Dispatch) => {
   return {
     updateFilter(filter: Filter) {
@@ -118,4 +111,4 @@ const mapDispatch = (dispatch: Dispatch) => {
   };
 };
 
-export default connect(mapState, mapDispatch)(RecordsFilter);
+export default connect(null, mapDispatch)(RecordsFilter);
