@@ -10,6 +10,7 @@ import { Dispatch } from "redux";
 import { connect } from "react-redux";
 import { RootState } from "../../reducers/index";
 import { URL } from "../../utils/constants";
+import useInnerWidth from "../../utils/useWidth";
 
 const BASE_URL = process.env.NODE_ENV === "production" ? URL.production : URL.dev;
 
@@ -34,6 +35,8 @@ const Content: React.FC<ContenProps> = ({ user, updateUserInfo }: ContenProps) =
   const [currThreshold, setCurrThrehold] = useState<number>(user.threshold);
 
   const [error, setError] = useState<Error>({ isValid: true, errorMessage: "" });
+
+  const width = useInnerWidth();
 
   // number only
   const reg = /^\d+$/;
@@ -122,7 +125,7 @@ const Content: React.FC<ContenProps> = ({ user, updateUserInfo }: ContenProps) =
         </Space>
       </div>
 
-      <div style={{ display: "flex" }}>
+      <div style={{ display: width > 800 ? "flex" : "block" }}>
         <div
           className="site-layout-background"
           style={{
@@ -130,7 +133,6 @@ const Content: React.FC<ContenProps> = ({ user, updateUserInfo }: ContenProps) =
             padding: 30,
             minHeight: 360,
             marginTop: 30,
-            width: 560,
           }}
         >
           <CategoriesEdittor type="expense"></CategoriesEdittor>
@@ -142,7 +144,6 @@ const Content: React.FC<ContenProps> = ({ user, updateUserInfo }: ContenProps) =
             padding: 30,
             minHeight: 360,
             marginTop: 30,
-            width: 560,
           }}
         >
           <CategoriesEdittor type="income"></CategoriesEdittor>
