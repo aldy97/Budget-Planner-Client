@@ -3,10 +3,12 @@ import { Switch, Space, Select, DatePicker } from "antd";
 import { ExpenseCategories, IncomeCategories } from "../../utils/constants";
 import { UPDATE_FILTER, UpdateFilter } from "../../actions/FilterAction";
 import moment from "moment";
+import styled from "styled-components";
 import { connect } from "react-redux";
 import { RootState } from "../../reducers/index";
 import { Dispatch } from "redux";
 import { Filter } from "../../reducers/FilterReducer";
+import useWidth from "../../utils/useWidth";
 import { useSelector } from "react-redux";
 
 const { Option, OptGroup } = Select;
@@ -15,10 +17,18 @@ interface FilterProps {
   updateFilter: (filter: Filter) => void;
 }
 
+const StyledSpan = styled.span`
+  color: #595959;
+  font-size: 16px;
+  font-weight: bold;
+`;
+
 const RecordsFilter: React.FC<FilterProps> = ({ updateFilter }) => {
-  const [enabled, setEnabled] = useState(false);
-  const [month, setMonth] = useState("");
-  const [category, setCategory] = useState("");
+  const [enabled, setEnabled] = useState<boolean>(false);
+  const [month, setMonth] = useState<string>("");
+  const [category, setCategory] = useState<string>("");
+
+  const width = useWidth();
 
   const { expenseList, incomeList } = useSelector((s: RootState) => {
     return {
@@ -49,10 +59,8 @@ const RecordsFilter: React.FC<FilterProps> = ({ updateFilter }) => {
   }, [enabled, month, category]);
 
   return (
-    <Space>
-      <span style={{ color: "#595959", fontSize: 16, fontWeight: "bold" }}>
-        Apply Filter:
-      </span>
+    <Space direction={width > 1000 ? "horizontal" : "vertical"}>
+      <StyledSpan>Apply Filter:</StyledSpan>
       <Switch checked={enabled} onChange={handleSwitchChange}></Switch>
       <DatePicker
         allowClear
@@ -61,9 +69,7 @@ const RecordsFilter: React.FC<FilterProps> = ({ updateFilter }) => {
         onChange={handleMonthChange}
         picker="month"
       />
-      <span style={{ color: "#595959", fontSize: 16, fontWeight: "bold" }}>
-        Choose category:
-      </span>
+      <StyledSpan>Choose category:</StyledSpan>
       <Select
         allowClear
         defaultValue={category}
