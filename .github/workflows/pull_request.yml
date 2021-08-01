@@ -1,8 +1,5 @@
-name: deploy
-on:
-  push:
-    branches:
-      - master
+name: build
+on: [pull_request]
 jobs:
   lint_js:
     name: TypeScript
@@ -13,7 +10,10 @@ jobs:
           fetch-depth: 1
       - uses: actions/setup-node@v1
         with:
-          node-version: 14.16
+          node-version: 14.4
       - run: npm install
+      - run: "cd infra && npm install"
       - run: npm run lint
-      - run: "npm run build"
+      - run: "cd infra && npm run lint"
+      - run: "cd infra && npm run format-check"
+      - run: "cd infra && npm run typecheck"
