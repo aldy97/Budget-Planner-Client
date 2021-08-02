@@ -37,7 +37,7 @@ const Login: React.FC = () => {
       <CenteredBox>
         <Logo size="large" showWords></Logo>
         <StyledDesc>
-          A web app that helps you improve your financial status
+          A web app that helps you improve your financial status💰
         </StyledDesc>
         <LoginRegToggler atLogin={isAtLogin} toogle={toogle}></LoginRegToggler>
         {isAtLogin && <LoginForm></LoginForm>}
