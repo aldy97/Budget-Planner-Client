@@ -4,7 +4,7 @@ on:
     branches:
       - master
 jobs:
-  lint_js:
+  lint:
     name: TypeScript
     runs-on: ubuntu-latest
     steps:
@@ -16,4 +16,15 @@ jobs:
           node-version: 14.16
       - run: npm install
       - run: npm run lint
-      - run: "npm run build"
+      - run: npm run build
+  deploy:
+    name: "Deploy with Netlify"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: jsmrcaga/action-netlify-deploy@master
+        with:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+          NETLIFY_DEPLOY_MESSAGE: "Prod deploy v${{ github.ref }}"
+          NETLIFY_DEPLOY_TO_PROD: true
