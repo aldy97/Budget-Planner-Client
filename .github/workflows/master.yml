@@ -11,6 +11,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
       - name: Build project
+        run: npm run install
         run: npm run build
       - name: Deploy
         uses: jsmrcaga/action-netlify-deploy@master
