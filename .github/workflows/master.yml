@@ -11,7 +11,7 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Install Dependencies
-        run: npm CI
+        run: npm ci
 
       - name: Build Site
         run: npm run build
