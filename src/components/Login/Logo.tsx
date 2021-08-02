@@ -14,7 +14,7 @@ const LogoWrapper = styled.div<LogoProps>`
   margin-left: auto;
   margin-right: auto;
   text-align: center;
-  line-height: ${props => (props.size === "large" ? "100px" : "40px")};
+  line-height: ${prop => (props.size === "large" ? "100px" : "40px")};
   font-size: ${props => (props.size === "large" ? "50px" : "20px")};
   font-style: futura;
   color: white;
