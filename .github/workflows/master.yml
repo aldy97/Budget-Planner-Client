@@ -11,7 +11,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
       - name: Install node_modules
-        run: npm intsall
+        run: npm install
       - name: Build project
         run: npm run build
       - name: Deploy
