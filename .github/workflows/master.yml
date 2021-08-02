@@ -8,7 +8,7 @@ jobs:
     name: Deploy Client
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@master
 
       # Install NodeJS
       - name: Use Node.js 14.x
@@ -24,8 +24,7 @@ jobs:
       - name: Deploy Frontend to Netlify
         uses: netlify/actions/cli@master
         with:
-          args: deploy --dir=build --prod
-          secrets: '["NETLIFY_AUTH_TOKEN", "NETLIFY_SITE_ID"]'
+          args: deploy --dir=site --functions=functions
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
