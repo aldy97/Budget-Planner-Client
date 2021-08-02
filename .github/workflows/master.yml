@@ -9,13 +9,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
-      - name: Install node_modules
-        run: npm install
-      - name: Build project
-        run: npm run build
+        uses: actions/checkout@v1
       - name: Deploy
-        uses: jsmrcaga/action-netlify-deploy@master
+        uses: South-Paw/action-netlify-deploy@v1.2.0
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
