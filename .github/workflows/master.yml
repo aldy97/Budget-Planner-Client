@@ -4,19 +4,6 @@ on:
     branches:
       - master
 jobs:
-  lint:
-    name: TypeScript
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 1
-      - uses: actions/setup-node@v1
-        with:
-          node-version: 14.16
-      - run: npm install
-      - run: npm run lint
-      - run: npm run build
   deploy:
     # Operating system to run job on
     runs-on: ubuntu-latest
@@ -41,4 +28,4 @@ jobs:
           NETLIFY_SITE_ID: ${{ secrets.DEV_NETLIFY_SITE_ID }}
         with:
           args: deploy --dir=build --prod
-          secrets: '["NETLIFY_AUTH_TOKEN", "NETLIFY_SITE_ID"]'
+          # secrets: '["NETLIFY_AUTH_TOKEN", "NETLIFY_SITE_ID"]'
