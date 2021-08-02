@@ -4,27 +4,21 @@ on:
     branches:
       - master
 jobs:
-  deploy:
-    name: Deploy Client
+  build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@master
+      # Checkout repo
+      - uses: actions/checkout@v2
 
-      # Install NodeJS
-      - name: Use Node.js 14.x
-        uses: actions/setup-node@v1
-        with:
-          node-version: 14.x
+      - name: Install Dependencies
+        run: npm install
 
-      # Run npm install and build on our code
-      - run: npm install
-      - run: npm run build
+      - name: Build Site
+        run: npm run build
 
-      # Deploy the build to Netlify
-      - name: Deploy Frontend to Netlify
-        uses: netlify/actions/cli@master
-        with:
-          args: deploy --dir=site --functions=functions
+      # Deploy the site with netlify-cli
+      - name: Deploy Site
         env:
-          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+        run: netlify deploy --dir=public --prod
