@@ -17,8 +17,3 @@ jobs:
       - run: npm install
       - run: npm run lint
       - run: npm run build
-  deploy:
-    name: Deploy with Netlify
-    runs-on: ubuntu-latest
-    steps:
-      - run: netlify deploy --prod
