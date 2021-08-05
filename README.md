@@ -1,7 +1,8 @@
 # Budget-Planner-Client💰
-[![deploy](https://github.com/aldy97/Budget-Planner-Client/workflows/deploy/badge.svg)](https://github.com/aldy97/Budget-Planner-Client/actions?query=branch%3Amaster+workflow%3Adeploy)
 [![Netlify Status](https://api.netlify.com/api/v1/badges/d72ff65e-f81c-4125-a2ea-eb4c921c8b41/deploy-status)](https://app.netlify.com/sites/budget-planner-client/deploys)
-[![JavaScript Style Guide: Good Parts](https://img.shields.io/badge/code%20style-goodparts-brightgreen.svg?style=flat)](https://github.com/dwyl/goodparts "JavaScript The Good Parts")
+[![deploy](https://github.com/aldy97/Budget-Planner-Client/workflows/deploy/badge.svg)](https://github.com/aldy97/Budget-Planner-Client/actions?query=branch%3Amaster+workflow%3Adeploy)
+[![JavaScript Style Guide: Good Parts](https://img.shields.io/badge/code%20style-goodparts-brightgreen.svg?style=flat)](https://github.com/aldy97/Budget-Planner-Client)
+[![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/aldy97/Budget-Planner-Client/issues)
 
 ## Budget planner helps you improve your financial status🤑
 
@@ -21,8 +22,9 @@
 ## Tech stack⚙️
 
 - TypeScript
-- React.js
+- React
 - Redux
-- Echarts.js
+- Echarts
 - Styled-components
 - Ant design UI
+- Axios
