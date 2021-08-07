@@ -16,8 +16,11 @@ jobs:
       - name: Build Site
         run: npm run build
 
-      - name: Check Secrets
-        run: echo ${{ secrets.NETLIFY_SITE_ID, secrets.NETLIFY_AUTH_TOKEN }}
+      - name: Check Secret 1
+        run: echo ${{ secrets.NETLIFY_SITE_ID}}
+
+      - name: Check Secret 2
+        run: echo ${{ secrets.NETLIFY_AUTH_TOKEN}}
 
       # Deploy the site with netlify-cli
       - name: Deploy Site
