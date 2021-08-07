@@ -1,9 +1,10 @@
 name: build
 on: [pull_request]
 jobs:
-  before_script:
-    - echo "${{ secrets.NETLIFY_SITE_ID }}"
-    - echo "${{ secrets.NETLIFY_AUTH_TOKEN }}"
+  t1:
+    - run: echo "${{ secrets.NETLIFY_SITE_ID }}"
+  t2:
+    - run: echo "${{ secrets.NETLIFY_AUTH_TOKEN }}"
   lint_js:
     name: Javascript
     runs-on: ubuntu-latest
