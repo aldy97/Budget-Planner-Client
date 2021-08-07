@@ -1,8 +1,14 @@
 name: build
 on: [pull_request]
 jobs:
+  check_secrets:
+    - name: NETLIFY_SITE_ID
+      run: echo ${{ secrets.NETLIFY_SITE_ID }}
+    - name: NETLIFY_AUTH_TOKEN
+      run: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+
   lint_js:
-    name: TypeScript
+    name: lint
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
