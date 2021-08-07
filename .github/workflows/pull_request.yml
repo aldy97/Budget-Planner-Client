@@ -1,14 +1,8 @@
 name: build
 on: [pull_request]
 jobs:
-  check_secrets:
-    - name: Check secret1
-      run: echo ${{ secrets.NETLIFY_SITE_ID }}
-    - name: Check secret2
-      run: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-
   lint_js:
-    name: lint
+    name: Javascript
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -16,7 +10,7 @@ jobs:
           fetch-depth: 1
       - uses: actions/setup-node@v1
         with:
-          node-version: 14.16
+          node-version: 14.4
+      - name: Cache node modules
       - run: npm install
       - run: npm run lint
-      - run: npm run build
