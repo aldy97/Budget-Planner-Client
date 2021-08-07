@@ -11,8 +11,17 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Install Dependencies
-        run: npm ci
+        run: npm i
 
       - name: Build Site
         run: npm run build
 
+      - name: Check Secrets
+        run: echo ${{ secrets.NETLIFY_SITE_ID, secrets.NETLIFY_AUTH_TOKEN }}
+
+      # Deploy the site with netlify-cli
+      - name: Deploy Site
+        env:
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+        run: netlify deploy --dir=public --prod
